@@ -150,6 +150,30 @@ body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #f8fafc; 
 .add-tag-row input[type=text] { flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; outline: none; }
 .add-tag-row input[type=color] { width: 40px; height: 38px; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; }
 .connected-status { margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #16a34a; }
+
+/* Case Summary */
+.case-header { padding: 24px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+.case-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+.case-meta { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 12px; }
+.case-meta-item { font-size: 13px; }
+.case-meta-item .cml { color: #94a3b8; margin-right: 6px; }
+.case-summary-text { font-size: 14px; color: #475569; line-height: 1.7; white-space: pre-wrap; padding: 16px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; }
+.timeline { position: relative; padding-left: 28px; }
+.timeline::before { content: ''; position: absolute; left: 10px; top: 8px; bottom: 8px; width: 2px; background: #e2e8f0; }
+.tl-item { position: relative; margin-bottom: 20px; }
+.tl-dot { position: absolute; left: -23px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #3b82f6; background: #fff; }
+.tl-item.first .tl-dot { background: #3b82f6; }
+.tl-date { font-size: 12px; color: #94a3b8; margin-bottom: 4px; }
+.tl-card { padding: 12px 16px; background: #fff; border-radius: 10px; border: 1px solid #e2e8f0; cursor: pointer; }
+.tl-card:hover { border-color: #93c5fd; }
+.tl-card .tl-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.tl-card .tl-desc { font-size: 12px; color: #64748b; }
+.key-notes { padding: 20px 24px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+.key-notes h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.back-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; cursor: pointer; margin-bottom: 16px; font-weight: 500; }
+.back-btn:hover { background: #e2e8f0; }
+.search-highlight { background: #fef08a; padding: 0 2px; border-radius: 2px; }
+.search-result-ctx { font-size: 12px; color: #64748b; margin-top: 4px; padding: 6px 10px; background: #f8fafc; border-radius: 6px; border-left: 3px solid #3b82f6; }
 </style>
 </head>
 <body>
@@ -192,27 +216,111 @@ const TAGS = [
 ];
 
 const DOCUMENTS = [
-  { id:"doc-1", title:"공정위 시정명령서", fileName:"FTC_Corrective_Order_2026.pdf", ext:"pdf", size:3200000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-01-15", parties:["공정거래위원회","당사"], conf:"confidential", created:"2026-01-16T09:00:00Z", noteCount:4, tagIds:["tag-1","tag-10"] },
-  { id:"doc-2", title:"CP프로그램 이행점검 보고서", fileName:"CP_Compliance_Report_Q1_2026.docx", ext:"docx", size:1850000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-02-20", parties:[], conf:"internal", created:"2026-02-21T10:30:00Z", noteCount:1, tagIds:["tag-3","tag-10"] },
-  { id:"doc-3", title:"외부 법무법인 의견서 (과징금 감경)", fileName:"Legal_Opinion_FTC_Penalty.pdf", ext:"pdf", size:2100000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-02-28", parties:["법무법인 광장"], conf:"confidential", created:"2026-03-01T09:00:00Z", noteCount:3, tagIds:["tag-1","tag-10"] },
-  { id:"doc-4", title:"DEF Corp 인수 LOI (의향서)", fileName:"DEF_LOI_2026.pdf", ext:"pdf", size:1500000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-01-10", parties:["DEF Corp","당사"], conf:"confidential", created:"2026-01-11T11:00:00Z", noteCount:2, tagIds:["tag-9"] },
-  { id:"doc-5", title:"DEF Corp 실사보고서 (법률)", fileName:"DEF_Legal_DD_Report.pdf", ext:"pdf", size:8500000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-02-15", parties:["법무법인 한빛","DEF Corp"], conf:"confidential", created:"2026-02-16T14:00:00Z", noteCount:6, tagIds:["tag-1","tag-3","tag-9"] },
-  { id:"doc-6", title:"DEF Corp SPA (주식매매계약서) 초안", fileName:"DEF_SPA_Draft_v2.docx", ext:"docx", size:4200000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-03-10", parties:["DEF Corp","당사"], conf:"confidential", created:"2026-03-11T09:00:00Z", noteCount:5, tagIds:["tag-3","tag-9"] },
-  { id:"doc-7", title:"DEF Corp 기업결합 신고서", fileName:"DEF_Merger_Filing.pdf", ext:"pdf", size:3100000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-03-18", parties:["공정거래위원회"], conf:"confidential", created:"2026-03-19T10:00:00Z", noteCount:1, tagIds:["tag-9","tag-10"] },
-  { id:"doc-8", title:"부당해고 구제신청서 (홍OO)", fileName:"Labor_Case_Hong_2026.pdf", ext:"pdf", size:2400000, spPath:"/법무/2026/노동소송", catId:"cat-2026-labor", status:"active", date:"2026-02-05", parties:["홍OO","당사"], conf:"confidential", created:"2026-02-06T09:00:00Z", noteCount:3, tagIds:["tag-7","tag-3"] },
-  { id:"doc-9", title:"XYZ 특허 침해 소송 소장", fileName:"XYZ_Patent_Complaint.pdf", ext:"pdf", size:5200000, spPath:"/법무/2025/XYZ특허소송", catId:"cat-2025-patent", status:"active", date:"2025-06-20", parties:["XYZ Technologies","당사"], conf:"confidential", created:"2025-06-21T11:00:00Z", noteCount:5, tagIds:["tag-7","tag-3"] },
-  { id:"doc-10", title:"XYZ 특허소송 답변서", fileName:"XYZ_Patent_Response.pdf", ext:"pdf", size:4300000, spPath:"/법무/2025/XYZ특허소송", catId:"cat-2025-patent", status:"active", date:"2025-08-20", parties:["XYZ Technologies","당사"], conf:"confidential", created:"2025-08-21T11:00:00Z", noteCount:3, tagIds:["tag-7","tag-2"] },
-  { id:"doc-11", title:"GHI 파트너 NDA", fileName:"GHI_NDA_2025.pdf", ext:"pdf", size:650000, spPath:"/법무/2025/NDA", catId:"cat-2025-nda", status:"active", date:"2025-04-10", parties:["GHI Partners","당사"], conf:"confidential", created:"2025-04-11T13:00:00Z", noteCount:1, tagIds:["tag-6","tag-2"] },
-  { id:"doc-12", title:"본사 사무실 임대차 계약서", fileName:"Office_Lease_2025.docx", ext:"docx", size:1850000, spPath:"/법무/2025/본사임대차", catId:"cat-2025-lease", status:"active", date:"2025-01-10", parties:["서울빌딩 주식회사","당사"], conf:"internal", created:"2025-01-11T10:30:00Z", noteCount:2, tagIds:["tag-5"] },
-  { id:"doc-13", title:"JKL 원자재 공급계약서", fileName:"JKL_Supply_Agreement.docx", ext:"docx", size:1750000, spPath:"/법무/2025/JKL원자재공급", catId:"cat-2025-supply", status:"active", date:"2025-07-05", parties:["JKL Industries","당사"], conf:"internal", created:"2025-07-06T09:00:00Z", noteCount:2, tagIds:["tag-3"] },
-  { id:"doc-14", title:"ABC Corp 소프트웨어 라이선스 계약서", fileName:"ABC_License_Agreement_2025.pdf", ext:"pdf", size:2450000, spPath:"/법무/2025/ABC라이선스", catId:"cat-2025-license", status:"active", date:"2025-03-15", parties:["ABC Corp","당사"], conf:"confidential", created:"2025-03-16T09:00:00Z", noteCount:3, tagIds:["tag-2"] },
-  { id:"doc-15", title:"사업자 등록증 갱신 서류", fileName:"Business_Registration_Renewal.pdf", ext:"pdf", size:420000, spPath:"/법무/2024/사업자등록", catId:"cat-2024-reg", status:"archived", date:"2024-12-15", parties:[], conf:"internal", created:"2024-12-16T10:00:00Z", noteCount:0, tagIds:[] },
-  { id:"doc-16", title:"내부 컴플라이언스 규정 (2024 개정)", fileName:"Compliance_Policy_2024.pdf", ext:"pdf", size:3100000, spPath:"/법무/2024/내부통제", catId:"cat-2024-compliance", status:"archived", date:"2024-06-01", parties:[], conf:"internal", created:"2024-06-02T08:00:00Z", noteCount:0, tagIds:["tag-4"] },
-  { id:"doc-17", title:"제42기 정기이사회 안건 (DEF 인수 승인)", fileName:"Board_42_DEF_Approval.pptx", ext:"pptx", size:6500000, spPath:"/법무/이사회자료/2026", catId:"cat-board-2026", status:"active", date:"2026-03-05", parties:[], conf:"confidential", created:"2026-03-06T08:00:00Z", noteCount:2, tagIds:["tag-8","tag-9"] },
-  { id:"doc-18", title:"제42기 임시이사회 의사록", fileName:"Board_42_Extraordinary_Minutes.docx", ext:"docx", size:1200000, spPath:"/법무/이사회자료/2026", catId:"cat-board-2026", status:"active", date:"2026-01-20", parties:[], conf:"confidential", created:"2026-01-21T09:00:00Z", noteCount:1, tagIds:["tag-8","tag-2"] },
-  { id:"doc-19", title:"제41기 정기이사회 의사록", fileName:"Board_41_Regular_Minutes.docx", ext:"docx", size:1800000, spPath:"/법무/이사회자료/2025", catId:"cat-board-2025", status:"active", date:"2025-03-25", parties:[], conf:"confidential", created:"2025-03-26T09:00:00Z", noteCount:1, tagIds:["tag-8","tag-2"] },
-  { id:"doc-20", title:"개인정보 처리방침 (v3.2)", fileName:"Privacy_Policy_v3.2.pdf", ext:"pdf", size:980000, spPath:"/법무/규정", catId:"cat-policy", status:"active", date:"2025-06-01", parties:[], conf:"public", created:"2025-06-02T08:00:00Z", noteCount:1, tagIds:["tag-2"] },
+  { id:"doc-1", title:"공정위 시정명령서", fileName:"FTC_Corrective_Order_2026.pdf", ext:"pdf", size:3200000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-01-15", parties:["공정거래위원회","당사"], conf:"confidential", created:"2026-01-16T09:00:00Z", noteCount:4, tagIds:["tag-1","tag-10"], body:"공정거래법 제19조 위반 부당한 공동행위 가격담합 시정명령 과징금 50억원 부과처분 재발방지 프로그램 이행계획 제출 시정조치 명령서 독점규제" },
+  { id:"doc-2", title:"CP프로그램 이행점검 보고서", fileName:"CP_Compliance_Report_Q1_2026.docx", ext:"docx", size:1850000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-02-20", parties:[], conf:"internal", created:"2026-02-21T10:30:00Z", noteCount:1, tagIds:["tag-3","tag-10"], body:"공정거래 자율준수 프로그램 컴플라이언스 이행점검 교육실적 내부감사 위반사례 모니터링 자진시정 감경 신청 준비 CP등급 평가" },
+  { id:"doc-3", title:"외부 법무법인 의견서 (과징금 감경)", fileName:"Legal_Opinion_FTC_Penalty.pdf", ext:"pdf", size:2100000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-02-28", parties:["법무법인 광장"], conf:"confidential", created:"2026-03-01T09:00:00Z", noteCount:3, tagIds:["tag-1","tag-10"], body:"과징금 감경사유 자진시정 협조감경 20% CP프로그램 실적 추가감경 행정소송 취소소송 검토 부당공동행위 위반금액 산정기준 손해배상 리스크" },
+  { id:"doc-4", title:"DEF Corp 인수 LOI (의향서)", fileName:"DEF_LOI_2026.pdf", ext:"pdf", size:1500000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-01-10", parties:["DEF Corp","당사"], conf:"confidential", created:"2026-01-11T11:00:00Z", noteCount:2, tagIds:["tag-9"], body:"인수의향서 Letter of Intent 독점교섭권 비밀유지 실사 접근 허용 인수가격 범위 제시 기본조건 합의 배타적 협상기간 30일" },
+  { id:"doc-5", title:"DEF Corp 실사보고서 (법률)", fileName:"DEF_Legal_DD_Report.pdf", ext:"pdf", size:8500000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-02-15", parties:["법무법인 한빛","DEF Corp"], conf:"confidential", created:"2026-02-16T14:00:00Z", noteCount:6, tagIds:["tag-1","tag-3","tag-9"], body:"법률실사 Due Diligence 노동소송 미해결 2건 환경규제 위반 과태료 특허 만료 임박 주주간계약 Tag-along 조항 우발채무 소송리스크 진술보증 에스크로" },
+  { id:"doc-6", title:"DEF Corp SPA (주식매매계약서) 초안", fileName:"DEF_SPA_Draft_v2.docx", ext:"docx", size:4200000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-03-10", parties:["DEF Corp","당사"], conf:"confidential", created:"2026-03-11T09:00:00Z", noteCount:5, tagIds:["tag-3","tag-9"], body:"주식매매계약 Share Purchase Agreement 진술보증 손해배상 상한 인수가 30% 선행조건 기업결합 승인 Closing 예정 위약벌 계약해제 경업금지 보상조항" },
+  { id:"doc-7", title:"DEF Corp 기업결합 신고서", fileName:"DEF_Merger_Filing.pdf", ext:"pdf", size:3100000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-03-18", parties:["공정거래위원회"], conf:"confidential", created:"2026-03-19T10:00:00Z", noteCount:1, tagIds:["tag-9","tag-10"], body:"기업결합 신고 공정거래위원회 시장점유율 경쟁제한 심사기준 간이심사 대상 자산총액 매출액 결합유형 수직결합 혼합결합" },
+  { id:"doc-8", title:"부당해고 구제신청서 (홍OO)", fileName:"Labor_Case_Hong_2026.pdf", ext:"pdf", size:2400000, spPath:"/법무/2026/노동소송", catId:"cat-2026-labor", status:"active", date:"2026-02-05", parties:["홍OO","당사"], conf:"confidential", created:"2026-02-06T09:00:00Z", noteCount:3, tagIds:["tag-7","tag-3"], body:"부당해고 구제신청 노동위원회 근로기준법 제23조 정당한 이유 징계해고 절차 취업규칙 근무평가 인사위원회 의사록 복직 원직복직 임금상당액" },
+  { id:"doc-9", title:"XYZ 특허 침해 소송 소장", fileName:"XYZ_Patent_Complaint.pdf", ext:"pdf", size:5200000, spPath:"/법무/2025/XYZ특허소송", catId:"cat-2025-patent", status:"active", date:"2025-06-20", parties:["XYZ Technologies","당사"], conf:"confidential", created:"2025-06-21T11:00:00Z", noteCount:5, tagIds:["tag-7","tag-3"], body:"특허권 침해소송 특허법 제126조 손해배상 청구 금지청구 특허등록번호 청구항 구성요소 균등론 기술범위 침해 감정 선행기술 무효심판" },
+  { id:"doc-10", title:"XYZ 특허소송 답변서", fileName:"XYZ_Patent_Response.pdf", ext:"pdf", size:4300000, spPath:"/법무/2025/XYZ특허소송", catId:"cat-2025-patent", status:"active", date:"2025-08-20", parties:["XYZ Technologies","당사"], conf:"confidential", created:"2025-08-21T11:00:00Z", noteCount:3, tagIds:["tag-7","tag-2"], body:"답변서 특허 무효 사유 선행기술 공지기술 진보성 부정 비침해 주장 청구항 해석 기술적 범위 자유실시 감정서 전문가 의견서" },
+  { id:"doc-11", title:"GHI 파트너 NDA", fileName:"GHI_NDA_2025.pdf", ext:"pdf", size:650000, spPath:"/법무/2025/NDA", catId:"cat-2025-nda", status:"active", date:"2025-04-10", parties:["GHI Partners","당사"], conf:"confidential", created:"2025-04-11T13:00:00Z", noteCount:1, tagIds:["tag-6","tag-2"], body:"비밀유지계약 Non-Disclosure Agreement 비밀정보 정의 사용제한 반환의무 유효기간 3년 위반시 손해배상 예정액 잔존조항 제3자 제공금지" },
+  { id:"doc-12", title:"본사 사무실 임대차 계약서", fileName:"Office_Lease_2025.docx", ext:"docx", size:1850000, spPath:"/법무/2025/본사임대차", catId:"cat-2025-lease", status:"active", date:"2025-01-10", parties:["서울빌딩 주식회사","당사"], conf:"internal", created:"2025-01-11T10:30:00Z", noteCount:2, tagIds:["tag-5"], body:"사무실 임대차계약 보증금 월 임차료 관리비 계약기간 2년 자동갱신 원상복구 의무 중도해지 위약금 3개월분 임차인 권리 시설변경 승인" },
+  { id:"doc-13", title:"JKL 원자재 공급계약서", fileName:"JKL_Supply_Agreement.docx", ext:"docx", size:1750000, spPath:"/법무/2025/JKL원자재공급", catId:"cat-2025-supply", status:"active", date:"2025-07-05", parties:["JKL Industries","당사"], conf:"internal", created:"2025-07-06T09:00:00Z", noteCount:2, tagIds:["tag-3"], body:"원자재 공급계약 납품기한 품질기준 검수절차 하자보증 대금지급 조건 단가조정 불가항력 계약해지 사유 손해배상 책임한도 독점공급 최소구매량" },
+  { id:"doc-14", title:"ABC Corp 소프트웨어 라이선스 계약서", fileName:"ABC_License_Agreement_2025.pdf", ext:"pdf", size:2450000, spPath:"/법무/2025/ABC라이선스", catId:"cat-2025-license", status:"active", date:"2025-03-15", parties:["ABC Corp","당사"], conf:"confidential", created:"2025-03-16T09:00:00Z", noteCount:3, tagIds:["tag-2"], body:"소프트웨어 라이선스 사용허락 계약기간 3년 자동갱신 만료 90일전 서면통지 해지 사용범위 국내 사업부 전체 위약금 잔여기간 라이선스비 50% 지적재산권" },
+  { id:"doc-15", title:"사업자 등록증 갱신 서류", fileName:"Business_Registration_Renewal.pdf", ext:"pdf", size:420000, spPath:"/법무/2024/사업자등록", catId:"cat-2024-reg", status:"archived", date:"2024-12-15", parties:[], conf:"internal", created:"2024-12-16T10:00:00Z", noteCount:0, tagIds:[], body:"사업자등록증 갱신 신청서 법인등기부등본 정관 주주명부 대표이사 변경 사업목적 추가 세무서 제출" },
+  { id:"doc-16", title:"내부 컴플라이언스 규정 (2024 개정)", fileName:"Compliance_Policy_2024.pdf", ext:"pdf", size:3100000, spPath:"/법무/2024/내부통제", catId:"cat-2024-compliance", status:"archived", date:"2024-06-01", parties:[], conf:"internal", created:"2024-06-02T08:00:00Z", noteCount:0, tagIds:["tag-4"], body:"내부통제 컴플라이언스 규정 윤리강령 공정거래 자율준수 내부고발 신고채널 이해충돌 방지 부패방지 김영란법 접대 선물 제한" },
+  { id:"doc-17", title:"제42기 정기이사회 안건 (DEF 인수 승인)", fileName:"Board_42_DEF_Approval.pptx", ext:"pptx", size:6500000, spPath:"/법무/이사회자료/2026", catId:"cat-board-2026", status:"active", date:"2026-03-05", parties:[], conf:"confidential", created:"2026-03-06T08:00:00Z", noteCount:2, tagIds:["tag-8","tag-9"], body:"이사회 안건 DEF Corp 인수 승인 의결 만장일치 인수가격 지급방식 현금 70% 주식교환 30% 실사 결과 보고 법적 리스크 대응방안 결의사항" },
+  { id:"doc-18", title:"제42기 임시이사회 의사록", fileName:"Board_42_Extraordinary_Minutes.docx", ext:"docx", size:1200000, spPath:"/법무/이사회자료/2026", catId:"cat-board-2026", status:"active", date:"2026-01-20", parties:[], conf:"confidential", created:"2026-01-21T09:00:00Z", noteCount:1, tagIds:["tag-8","tag-2"], body:"임시이사회 의사록 CP사건 대응방안 보고 과징금 납부 재원 확보 재발방지 대책 승인 사외이사 의견 경영진 책임 논의" },
+  { id:"doc-19", title:"제41기 정기이사회 의사록", fileName:"Board_41_Regular_Minutes.docx", ext:"docx", size:1800000, spPath:"/법무/이사회자료/2025", catId:"cat-board-2025", status:"active", date:"2025-03-25", parties:[], conf:"confidential", created:"2025-03-26T09:00:00Z", noteCount:1, tagIds:["tag-8","tag-2"], body:"정기이사회 의사록 재무제표 승인 배당결의 이사 선임 감사 선임 사업계획 보고 내부통제 시스템 점검 결과" },
+  { id:"doc-20", title:"개인정보 처리방침 (v3.2)", fileName:"Privacy_Policy_v3.2.pdf", ext:"pdf", size:980000, spPath:"/법무/규정", catId:"cat-policy", status:"active", date:"2025-06-01", parties:[], conf:"public", created:"2025-06-02T08:00:00Z", noteCount:1, tagIds:["tag-2"], body:"개인정보 처리방침 수집항목 이용목적 보유기간 제3자 제공 위탁 파기절차 정보주체 권리 개인정보보호법 동의 철회 열람청구 안전성 확보조치" },
 ];
+
+// 사건별 요약 데이터 (자동생성 시뮬레이션)
+const CASE_SUMMARIES = {
+  "cat-2026-cp": {
+    title: "CP사건 (공정거래위원회 시정명령)",
+    status: "진행중",
+    statusColor: "#d97706",
+    period: "2026.01 ~ 현재",
+    manager: "김법무",
+    lawFirm: "법무법인 광장",
+    summary: "공정거래위원회로부터 가격담합 관련 시정명령 및 과징금 약 50억원 부과처분을 받은 사건.\n\nCP프로그램 이행실적 제출을 통한 과징금 감경(자진시정 20%)을 추진 중이며, 행정소송 병행 여부를 2026년 4월 중 결정 예정.\n\n이행기한: 2026.04.30",
+    keyIssues: ["과징금 50억원 부과 (감경 추진 중)", "CP프로그램 이행점검 완료", "행정소송 병행 여부 4월 결정", "재발방지 프로그램 제출 필요"],
+  },
+  "cat-2026-ma": {
+    title: "M&A건 (DEF Corp 인수)",
+    status: "진행중",
+    statusColor: "#d97706",
+    period: "2026.01 ~ 현재",
+    manager: "김법무",
+    lawFirm: "법무법인 한빛",
+    summary: "DEF Corp 인수를 위한 M&A 절차 진행 중.\n\nLOI 체결 → 법률실사 완료 → SPA 협상 중 → 기업결합 신고 순서로 진행.\n실사 결과 노동소송 2건, 환경규제 위반, 특허 만료 등 리스크 확인.\n인수가 조정 및 에스크로 5억 설정 협상 중.\n\nClosing 예정: 2026.06.30\n이사회 만장일치 승인 완료 (2026.03.05)",
+    keyIssues: ["SPA 손해배상 상한 30%→50% 협상 중", "법률실사 리스크: 노동소송 2건, 환경규제, 특허만료", "기업결합 신고 완료 (공정위 심사 대기)", "Closing 예정일: 2026.06.30"],
+  },
+  "cat-2026-labor": {
+    title: "노동소송건 (홍OO 부당해고)",
+    status: "진행중",
+    statusColor: "#d97706",
+    period: "2026.02 ~ 현재",
+    manager: "이대리",
+    lawFirm: "-",
+    summary: "홍OO의 부당해고 구제신청 사건.\n\n징계해고의 정당성 여부가 쟁점이며, 노동위원회 조사기일 2026.03.25 예정.\n당사 참석자: 인사팀장, 법무담당\n준비서류: 근무평가서, 징계위원회 의사록, 취업규칙",
+    keyIssues: ["노동위원회 조사기일: 2026.03.25", "징계해고 정당성 입증 필요", "근무평가서 및 징계위원회 의사록 준비"],
+  },
+  "cat-2025-patent": {
+    title: "XYZ 특허 침해 소송",
+    status: "진행중",
+    statusColor: "#d97706",
+    period: "2025.06 ~ 현재",
+    manager: "김법무",
+    lawFirm: "-",
+    summary: "XYZ Technologies가 당사를 상대로 제기한 특허침해소송.\n\nXYZ 측 특허 3건 중 2건은 무효 사유 확인됨.\n답변서에 선행기술 자료 첨부 완료.\n\n담당 법원: 서울중앙지방법원 민사합의50부",
+    keyIssues: ["특허 3건 중 2건 무효 사유 확인", "선행기술 기반 비침해 주장", "다음 기일 대응 준비"],
+  },
+  "cat-2025-nda": {
+    title: "NDA/비밀유지 계약 관리",
+    status: "완료",
+    statusColor: "#16a34a",
+    period: "2025.04",
+    manager: "김법무",
+    lawFirm: "-",
+    summary: "GHI Partners와의 사업 협력 검토를 위한 비밀유지계약 체결.\n유효기간 3년, 비밀정보의 범위와 사용제한, 반환의무 등 표준 NDA 조건 적용.",
+    keyIssues: ["NDA 유효기간: 2025.04 ~ 2028.04", "검토 완료"],
+  },
+  "cat-2025-lease": {
+    title: "본사 사무실 임대차",
+    status: "만료예정",
+    statusColor: "#ea580c",
+    period: "2025.01 ~ 2027.01",
+    manager: "이대리",
+    lawFirm: "-",
+    summary: "서울빌딩 주식회사와의 본사 사무실 임대차 계약.\n계약기간 2년, 자동갱신 조항 포함.\n만료 전 갱신/이전 검토 필요.",
+    keyIssues: ["계약 만료: 2027.01", "자동갱신 조항 확인", "중도해지 위약금: 3개월분"],
+  },
+  "cat-2025-supply": {
+    title: "JKL 원자재 공급건",
+    status: "검토중",
+    statusColor: "#d97706",
+    period: "2025.07 ~ 현재",
+    manager: "김법무",
+    lawFirm: "-",
+    summary: "JKL Industries와의 원자재 공급계약.\n단가조정 및 최소구매량 조건 협상 진행 중.",
+    keyIssues: ["단가조정 협상 진행 중", "품질기준 검수절차 확인", "독점공급 조건 검토"],
+  },
+  "cat-2025-license": {
+    title: "ABC 소프트웨어 라이선스건",
+    status: "완료",
+    statusColor: "#16a34a",
+    period: "2025.03 ~ 2028.03",
+    manager: "김법무",
+    lawFirm: "-",
+    summary: "ABC Corp과의 소프트웨어 라이선스 계약 체결 완료.\n3년 계약, 자동갱신, 만료 90일 전 서면통지 시 해지 가능.\n손해배상 상한 50%로 최종 합의.",
+    keyIssues: ["계약기간: 2025.03 ~ 2028.03 (자동갱신)", "손해배상 상한 50% 합의 완료", "만료 90일 전 갱신 여부 결정 필요"],
+  },
+};
 
 const NOTES = [
   { id:"n1", docId:"doc-1", author:"김법무", title:"시정명령 핵심 내용", content:"- 시정명령 유형: 가격담합 관련 시정조치\n- 과징금: 약 50억원 (감경 여부 검토 중)\n- 이행기한: 2026.04.30\n- 향후 재발방지 프로그램 제출 필요", pinned:true, date:"2026-01-16T10:00:00Z" },
@@ -235,8 +343,13 @@ function getTags(ids){return ids.map(id=>TAGS.find(t=>t.id===id)).filter(Boolean
 function confBadge(c){const m={public:{bg:'#dcfce7',c:'#16a34a',l:'공개'},internal:{bg:'#e0e7ff',c:'#4f46e5',l:'사내'},confidential:{bg:'#fee2e2',c:'#dc2626',l:'기밀'}};const v=m[c]||m.internal;return `<span class="badge" style="background:${v.bg};color:${v.c}">${v.l}</span>`;}
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
+// AI 생성된 사건 요약 저장소 (런타임)
+let aiSummaries = {};
+// 사건별 채팅 히스토리
+let chatHistories = {};
+
 // ============ STATE ============
-let state = { page:'dashboard', search:'', selCat:null, selTag:null, selDoc:null, addingNote:false, settingsTab:'sharepoint', spConnected:false, expandedCats:{} };
+let state = { page:'dashboard', search:'', selCat:null, selTag:null, selDoc:null, addingNote:false, settingsTab:'sharepoint', spConnected:false, expandedCats:{}, caseSummary:null, aiLoading:false, chatLoading:false };
 // Auto-expand root categories
 CATEGORIES.filter(c=>!c.parentId).forEach(c=>state.expandedCats[c.id]=true);
 
@@ -244,6 +357,139 @@ CATEGORIES.filter(c=>!c.parentId).forEach(c=>state.expandedCats[c.id]=true);
 let notes = [...NOTES];
 
 function setState(patch){ Object.assign(state, patch); render(); }
+
+// ============ GPT API ============
+function getApiKey(){
+  return localStorage.getItem('openai_api_key')||'';
+}
+function setApiKey(key){
+  localStorage.setItem('openai_api_key', key);
+}
+
+async function generateAISummary(catId){
+  const apiKey=getApiKey();
+  if(!apiKey){ alert('설정 > AI 연동 탭에서 OpenAI API 키를 먼저 입력해주세요.'); return; }
+
+  const cat=CATEGORIES.find(c=>c.id===catId);
+  const docs=DOCUMENTS.filter(d=>d.catId===catId).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const caseNotes=[];
+  docs.forEach(d=>{
+    notes.filter(n=>n.docId===d.id).forEach(n=>caseNotes.push({docTitle:d.title, title:n.title, content:n.content, pinned:n.pinned}));
+  });
+
+  const prompt=`당신은 기업 법무팀의 법률 문서 분석 전문가입니다.
+아래 사건의 문서 목록과 메모를 분석하여 사건 요약을 생성해주세요.
+
+## 사건명: ${cat.name}
+
+## 문서 목록 (시간순):
+${docs.map(d=>`- [${d.date}] ${d.title} (${d.parties.join(', ')||'내부문서'})
+  본문키워드: ${d.body||'없음'}`).join('\n')}
+
+## 작성된 메모:
+${caseNotes.length>0?caseNotes.map(n=>`- [${n.pinned?'고정':'일반'}] ${n.title}: ${n.content}`).join('\n'):'메모 없음'}
+
+## 출력 형식 (반드시 아래 JSON 형식으로만 응답):
+{
+  "summary": "사건 전체 경과와 현재 상태를 3~5문장으로 요약",
+  "status": "진행중/완료/검토중/만료예정 중 하나",
+  "keyIssues": ["핵심 이슈 1", "핵심 이슈 2", "핵심 이슈 3"],
+  "nextActions": ["다음 조치사항 1", "다음 조치사항 2"],
+  "riskLevel": "높음/중간/낮음"
+}`;
+
+  state.aiLoading=true;
+  render();
+
+  try{
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify({
+        model:'gpt-4o-mini',
+        messages:[{role:'user',content:prompt}],
+        temperature:0.3,
+        max_tokens:1000,
+      })
+    });
+    if(!res.ok){
+      const err=await res.json().catch(()=>({}));
+      throw new Error(err.error?.message||'API 호출 실패 ('+res.status+')');
+    }
+    const data=await res.json();
+    const text=data.choices[0].message.content;
+    // JSON 파싱 (코드블록 제거)
+    const jsonStr=text.replace(/```json\n?/g,'').replace(/```\n?/g,'').trim();
+    const result=JSON.parse(jsonStr);
+    aiSummaries[catId]=result;
+    state.aiLoading=false;
+    render();
+  }catch(e){
+    state.aiLoading=false;
+    render();
+    alert('AI 요약 생성 실패: '+e.message);
+  }
+}
+
+function buildCaseContext(catId){
+  const cat=CATEGORIES.find(c=>c.id===catId);
+  const docs=DOCUMENTS.filter(d=>d.catId===catId).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const caseNotes=[];
+  docs.forEach(d=>{
+    notes.filter(n=>n.docId===d.id).forEach(n=>caseNotes.push({docTitle:d.title, title:n.title, content:n.content}));
+  });
+  return `사건명: ${cat.name}
+
+문서 목록 (시간순):
+${docs.map(d=>`- [${d.date}] ${d.title} (당사자: ${d.parties.join(', ')||'내부문서'})
+  본문키워드: ${d.body||'없음'}`).join('\n')}
+
+작성된 메모:
+${caseNotes.length>0?caseNotes.map(n=>`- [${n.docTitle}] ${n.title}: ${n.content}`).join('\n'):'메모 없음'}`;
+}
+
+async function sendChatMessage(catId, userMessage){
+  const apiKey=getApiKey();
+  if(!apiKey){ alert('설정 > AI 연동 탭에서 OpenAI API 키를 먼저 입력해주세요.'); return; }
+
+  if(!chatHistories[catId]) chatHistories[catId]=[];
+  chatHistories[catId].push({role:'user',content:userMessage});
+  state.chatLoading=true;
+  render();
+  // 스크롤
+  setTimeout(()=>{const el=document.getElementById('chatMessages');if(el)el.scrollTop=el.scrollHeight;},50);
+
+  const systemPrompt=`당신은 기업 법무팀의 법률 자문 AI 어시스턴트입니다.
+아래 사건의 문서 목록과 메모 내용을 기반으로 질문에 답변해주세요.
+답변은 한국어로, 간결하고 실무적으로 해주세요. 문서에 없는 내용은 추측이라고 밝혀주세요.
+
+${buildCaseContext(catId)}`;
+
+  const messages=[
+    {role:'system',content:systemPrompt},
+    ...chatHistories[catId]
+  ];
+
+  try{
+    const res=await fetch('https://api.openai.com/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+apiKey},
+      body:JSON.stringify({model:'gpt-4o-mini',messages:messages,temperature:0.4,max_tokens:1500})
+    });
+    if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.error?.message||'API 오류 '+res.status);}
+    const data=await res.json();
+    const reply=data.choices[0].message.content;
+    chatHistories[catId].push({role:'assistant',content:reply});
+    state.chatLoading=false;
+    render();
+    setTimeout(()=>{const el=document.getElementById('chatMessages');if(el)el.scrollTop=el.scrollHeight;},50);
+  }catch(e){
+    chatHistories[catId].pop(); // 실패 시 유저 메시지 제거
+    state.chatLoading=false;
+    render();
+    alert('AI 응답 실패: '+e.message);
+  }
+}
 
 // ============ RENDER ============
 function render(){
@@ -285,8 +531,9 @@ function renderSidebar(){
 
 function renderHeader(){
   const titles = {dashboard:'대시보드',documents:'문서 목록',search:'검색',archive:'아카이브',settings:'설정'};
+  const pageTitle = state.caseSummary ? '사건 요약' : titles[state.page];
   return `<header class="header">
-    <h1>${titles[state.page]}</h1>
+    <h1>${pageTitle}</h1>
     <div style="display:flex;align-items:center;gap:16px">
       <div class="search-box">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -305,14 +552,57 @@ function getFilteredDocs(){
   else if(state.page!=='search') docs = docs.filter(d=>d.status==='active');
   if(state.search){
     const q=state.search.toLowerCase();
-    docs=docs.filter(d=>d.title.toLowerCase().includes(q)||d.fileName.toLowerCase().includes(q)||d.parties.some(p=>p.toLowerCase().includes(q))||getTags(d.tagIds).some(t=>t.name.toLowerCase().includes(q)));
+    docs=docs.filter(d=>{
+      // 제목, 파일명, 당사자, 태그
+      if(d.title.toLowerCase().includes(q)) return true;
+      if(d.fileName.toLowerCase().includes(q)) return true;
+      if(d.parties.some(p=>p.toLowerCase().includes(q))) return true;
+      if(getTags(d.tagIds).some(t=>t.name.toLowerCase().includes(q))) return true;
+      // 문서 본문 검색
+      if(d.body && d.body.toLowerCase().includes(q)) return true;
+      // 메모 내용 검색
+      if(notes.some(n=>n.docId===d.id && (n.content.toLowerCase().includes(q)||n.title.toLowerCase().includes(q)))) return true;
+      return false;
+    });
   }
   return docs;
+}
+
+function getSearchContext(doc, q){
+  if(!q) return null;
+  const ql=q.toLowerCase();
+  // 본문에서 매치
+  if(doc.body && doc.body.toLowerCase().includes(ql)){
+    const idx=doc.body.toLowerCase().indexOf(ql);
+    const start=Math.max(0,idx-20);
+    const end=Math.min(doc.body.length,idx+q.length+40);
+    const snippet=(start>0?'...':'')+doc.body.substring(start,end)+(end<doc.body.length?'...':'');
+    return {type:'본문',text:snippet};
+  }
+  // 메모에서 매치
+  const matchNote=notes.find(n=>n.docId===doc.id && (n.content.toLowerCase().includes(ql)||n.title.toLowerCase().includes(ql)));
+  if(matchNote){
+    const src=matchNote.content.toLowerCase().includes(ql)?matchNote.content:matchNote.title;
+    const idx=src.toLowerCase().indexOf(ql);
+    const start=Math.max(0,idx-20);
+    const end=Math.min(src.length,idx+q.length+40);
+    const snippet=(start>0?'...':'')+src.substring(start,end)+(end<src.length?'...':'');
+    return {type:'메모: '+matchNote.title,text:snippet};
+  }
+  return null;
+}
+
+function highlightText(text, q){
+  if(!q) return esc(text);
+  const escaped=esc(text);
+  const regex=new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi');
+  return escaped.replace(regex,'<span class="search-highlight">$1</span>');
 }
 
 function renderContent(){
   if(state.page==='dashboard') return renderDashboard();
   if(state.page==='settings') return renderSettings();
+  if(state.caseSummary) return renderCaseSummary();
   return renderDocList();
 }
 
@@ -352,8 +642,10 @@ function renderDocList(){
   const rows=docs.map(d=>{
     const tags=getTags(d.tagIds);
     const c=fcolor(d.ext);
+    const ctx=state.search?getSearchContext(d,state.search):null;
+    const titleHtml=state.search?highlightText(d.title,state.search):esc(d.title);
     return `<tr data-doc="${d.id}">
-      <td><div class="doc-title-cell"><div class="file-icon" style="background:${c}15;color:${c}">${ficon(d.ext)}</div><div><div class="doc-title">${esc(d.title)}</div><div class="doc-tags">${tags.map(t=>`<span class="tag" style="background:${t.color}18;color:${t.color}">${esc(t.name)}</span>`).join('')}</div></div></div></td>
+      <td><div class="doc-title-cell"><div class="file-icon" style="background:${c}15;color:${c}">${ficon(d.ext)}</div><div><div class="doc-title">${titleHtml}</div><div class="doc-tags">${tags.map(t=>`<span class="tag" style="background:${t.color}18;color:${t.color}">${esc(t.name)}</span>`).join('')}</div>${ctx?`<div class="search-result-ctx"><strong>${esc(ctx.type)}</strong>: ${highlightText(ctx.text,state.search)}</div>`:''}</div></div></td>
       <td style="font-size:12px;color:#64748b;text-transform:uppercase">.${d.ext}</td>
       <td style="font-size:12px;color:#475569">${catName(d.catId)}</td>
       <td style="font-size:12px;color:#475569">${fdate(d.date)}</td>
@@ -371,6 +663,202 @@ function renderDocList(){
   </div>
   <table class="doc-table"><thead><tr><th>문서명</th><th style="width:80px">유형</th><th style="width:130px">카테고리</th><th style="width:120px">문서 일자</th><th style="width:80px">크기</th><th style="width:70px">메모</th><th style="width:90px">기밀등급</th></tr></thead><tbody>${rows}</tbody></table>
   ${docs.length===0?'<div class="empty-msg">검색 결과가 없습니다</div>':''}`;
+}
+
+function renderCaseSummary(){
+  const catId=state.caseSummary;
+  const cat=CATEGORIES.find(c=>c.id===catId);
+  if(!cat) return '<div class="empty-msg">카테고리를 찾을 수 없습니다.</div>';
+
+  const docs=DOCUMENTS.filter(d=>d.catId===catId).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const caseNotes=[];
+  docs.forEach(d=>{
+    notes.filter(n=>n.docId===d.id).forEach(n=>caseNotes.push({...n, docTitle:d.title}));
+  });
+  const pinnedNotes=caseNotes.filter(n=>n.pinned);
+
+  // 부모 카테고리
+  const parent=CATEGORIES.find(c=>c.id===cat.parentId);
+
+  // AI 요약 또는 하드코딩 또는 자동구성
+  const ai=aiSummaries[catId];
+  const cs=CASE_SUMMARIES[catId];
+
+  // 자동 구성 기본값
+  const firstDate=docs.length?docs[0].date:'';
+  const lastDate=docs.length?docs[docs.length-1].date:'';
+  const autoParties=[...new Set(docs.flatMap(d=>d.parties).filter(p=>p!=='당사'))];
+  const autoLawFirms=autoParties.filter(p=>p.includes('법무법인'));
+
+  // 상태 결정
+  const statusColors={진행중:'#d97706',완료:'#16a34a',검토중:'#d97706',만료예정:'#ea580c',높음:'#dc2626',중간:'#d97706',낮음:'#16a34a'};
+
+  // AI 결과 우선, 없으면 하드코딩, 없으면 자동구성
+  const summary=ai?ai.summary:(cs?cs.summary:'AI 요약 생성 버튼을 눌러 사건 요약을 자동으로 생성하세요.');
+  const status=ai?ai.status:(cs?cs.status:'검토중');
+  const statusColor=statusColors[status]||'#64748b';
+  const keyIssues=ai?ai.keyIssues:(cs?cs.keyIssues:[]);
+  const nextActions=ai?ai.nextActions:[];
+  const riskLevel=ai?ai.riskLevel:null;
+  const period=cs?cs.period:(firstDate&&lastDate?fdate(firstDate)+' ~ '+(status==='완료'?fdate(lastDate):'현재'):'');
+  const manager=cs?cs.manager:'미지정';
+  const lawFirm=cs?cs.lawFirm:(autoLawFirms.length?autoLawFirms.join(', '):'-');
+
+  const hasApiKey=!!getApiKey();
+  const aiLoadingHtml=state.aiLoading?`<div style="padding:24px;text-align:center;color:#3b82f6;font-size:14px">
+    <div style="margin-bottom:8px">⏳ AI가 사건을 분석하고 있습니다...</div>
+    <div style="font-size:12px;color:#94a3b8">문서 ${docs.length}건, 메모 ${caseNotes.length}건 분석 중</div>
+  </div>`:'';
+
+  return `<button class="back-btn" id="backFromCase">← ${parent?parent.name:'문서 목록'}으로 돌아가기</button>
+
+  <div class="case-header">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <h2>${esc(cat.name)}</h2>
+        <span class="badge" style="background:${statusColor}20;color:${statusColor}">${status}</span>
+        ${riskLevel?`<span class="badge" style="background:${statusColors[riskLevel]||'#64748b'}20;color:${statusColors[riskLevel]||'#64748b'}">위험도: ${riskLevel}</span>`:''}
+      </div>
+      <button id="aiSummaryBtn" class="btn-primary-lg" style="margin:0;${state.aiLoading?'opacity:0.6;pointer-events:none':''}${!hasApiKey?'opacity:0.8':''}">
+        ${state.aiLoading?'⏳ 분석 중...': ai?'🔄 AI 재생성':'✨ AI 요약 생성'}
+      </button>
+    </div>
+    ${!hasApiKey?'<div style="font-size:11px;color:#94a3b8;margin-bottom:8px">※ 설정 > AI 연동에서 OpenAI API 키를 입력하면 AI 요약을 사용할 수 있습니다.</div>':''}
+    <div class="case-meta">
+      <div class="case-meta-item"><span class="cml">기간</span>${esc(period)}</div>
+      <div class="case-meta-item"><span class="cml">담당자</span>${esc(manager)}</div>
+      <div class="case-meta-item"><span class="cml">외부법무법인</span>${esc(lawFirm)}</div>
+      <div class="case-meta-item"><span class="cml">문서</span>${docs.length}건</div>
+      <div class="case-meta-item"><span class="cml">관련 당사자</span>${autoParties.length?esc(autoParties.join(', ')):'없음'}</div>
+    </div>
+    ${aiLoadingHtml||`<div class="case-summary-text">${ai?'<div style="font-size:11px;color:#3b82f6;margin-bottom:6px">✨ AI 생성 요약</div>':''}${esc(summary)}</div>`}
+  </div>
+
+  <!-- 핵심 이슈 -->
+  ${keyIssues.length>0?`<div class="card" style="margin-bottom:20px">
+    <h3>${ai?'✨ AI 분석 - 핵심 이슈':'핵심 이슈'}</h3>
+    <ul style="padding-left:20px;margin:0">
+      ${keyIssues.map(i=>`<li style="font-size:13px;color:#475569;margin-bottom:8px;line-height:1.5">${esc(i)}</li>`).join('')}
+    </ul>
+  </div>`:''}
+
+  <!-- 다음 조치사항 (AI) -->
+  ${nextActions.length>0?`<div class="card" style="margin-bottom:20px;border-color:#bfdbfe">
+    <h3 style="color:#1e40af">✨ AI 권고 - 다음 조치사항</h3>
+    <ul style="padding-left:20px;margin:0">
+      ${nextActions.map(a=>`<li style="font-size:13px;color:#475569;margin-bottom:8px;line-height:1.5">${esc(a)}</li>`).join('')}
+    </ul>
+  </div>`:''}
+
+  <!-- 타임라인 -->
+  <div class="card" style="margin-bottom:20px">
+    <h3>문서 타임라인</h3>
+    <div class="timeline">
+      ${docs.map((d,i)=>{
+        const tags=getTags(d.tagIds);
+        const c=fcolor(d.ext);
+        return `<div class="tl-item${i===docs.length-1?' first':''}">
+          <div class="tl-dot"></div>
+          <div class="tl-date">${fdate(d.date)}</div>
+          <div class="tl-card" data-doc="${d.id}">
+            <div class="tl-title">
+              <span class="file-icon" style="min-width:28px;height:28px;border-radius:6px;background:${c}15;color:${c};font-size:9px;font-weight:700;display:flex;align-items:center;justify-content:center">${ficon(d.ext)}</span>
+              ${esc(d.title)}
+              ${d.noteCount>0?`<span class="note-count" style="font-size:11px">💬${d.noteCount}</span>`:''}
+            </div>
+            <div class="tl-desc">
+              ${d.parties.length?esc(d.parties.join(', '))+' · ':''}${fmt(d.size)}
+              ${tags.map(t=>`<span class="tag" style="background:${t.color}18;color:${t.color};margin-left:4px">${esc(t.name)}</span>`).join('')}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- AI 사건 질문 -->
+  <div class="card" style="margin-bottom:20px">
+    <h3 style="display:flex;align-items:center;gap:8px">✨ AI에게 이 사건에 대해 질문하기</h3>
+    <div id="chatMessages" style="max-height:400px;overflow-y:auto;margin-bottom:12px">
+      ${(chatHistories[catId]||[]).map(m=>`
+        <div style="display:flex;gap:10px;margin-bottom:12px;${m.role==='user'?'justify-content:flex-end':''}">
+          ${m.role==='assistant'?'<div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;margin-top:2px">AI</div>':''}
+          <div style="max-width:80%;padding:10px 14px;border-radius:${m.role==='user'?'12px 12px 2px 12px':'12px 12px 12px 2px'};background:${m.role==='user'?'#1e40af':'#f1f5f9'};color:${m.role==='user'?'#fff':'#1e293b'};font-size:13px;line-height:1.6;white-space:pre-wrap">${esc(m.content)}</div>
+          ${m.role==='user'?'<div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#1e40af,#3b82f6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700;margin-top:2px">KM</div>':''}
+        </div>
+      `).join('')}
+      ${state.chatLoading?'<div style="display:flex;gap:10px;margin-bottom:12px"><div style="min-width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#8b5cf6);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700">AI</div><div style="padding:10px 14px;border-radius:12px 12px 12px 2px;background:#f1f5f9;font-size:13px;color:#94a3b8">답변을 생성하고 있습니다...</div></div>':''}
+    </div>
+    ${!(chatHistories[catId]||[]).length&&!state.chatLoading?`
+      <div style="padding:16px;text-align:center;color:#94a3b8;font-size:13px;margin-bottom:12px">
+        이 사건의 문서와 메모를 기반으로 AI에게 질문할 수 있습니다.<br>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px">
+          <button class="chat-suggest" style="padding:5px 12px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;font-size:12px;color:#475569;cursor:pointer">이 사건의 핵심 리스크는?</button>
+          <button class="chat-suggest" style="padding:5px 12px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;font-size:12px;color:#475569;cursor:pointer">현재까지 진행 경과를 정리해줘</button>
+          <button class="chat-suggest" style="padding:5px 12px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;font-size:12px;color:#475569;cursor:pointer">다음에 해야 할 일은?</button>
+          <button class="chat-suggest" style="padding:5px 12px;border:1px solid #e2e8f0;border-radius:16px;background:#fff;font-size:12px;color:#475569;cursor:pointer">손해배상 관련 조항 정리</button>
+        </div>
+      </div>
+    `:''}
+    <div style="display:flex;gap:8px">
+      <input type="text" id="chatInput" placeholder="이 사건에 대해 질문하세요... (예: 손해배상 상한은 얼마인지?)" style="flex:1;padding:10px 14px;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;outline:none">
+      <button id="chatSendBtn" class="btn-primary-lg" style="margin:0;padding:10px 20px;${state.chatLoading?'opacity:0.6;pointer-events:none':''}">전송</button>
+    </div>
+    ${!getApiKey()?'<div style="font-size:11px;color:#94a3b8;margin-top:6px">※ 설정 > AI 연동에서 OpenAI API 키를 입력해야 사용할 수 있습니다.</div>':''}
+  </div>
+
+  <!-- 사건 메모 -->
+  <div class="key-notes">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <h3 style="margin:0">사건 메모 (${caseNotes.length})</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn-primary" id="addCaseNoteBtn">+ 사건 메모 추가</button>
+      </div>
+    </div>
+
+    ${state.addingNote?`<div class="note-form" style="margin-bottom:16px">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <select id="caseNoteDoc" style="flex:1;padding:8px 12px;border:1px solid #e2e8f0;border-radius:6px;font-size:13px;outline:none">
+          <option value="">문서 선택 (사건 전체에 대한 메모)</option>
+          ${docs.map(d=>`<option value="${d.id}">${esc(d.title)}</option>`).join('')}
+        </select>
+      </div>
+      <input type="text" id="caseNoteTitle" placeholder="메모 제목" style="margin-bottom:8px">
+      <textarea id="caseNoteContent" rows="4" placeholder="사건에 대한 핵심 내용, 경과, 의견 등을 메모하세요..."></textarea>
+      <div style="display:flex;align-items:center;gap:12px;margin-top:8px">
+        <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:#475569;cursor:pointer">
+          <input type="checkbox" id="caseNotePinned" style="accent-color:#d97706"> ⭐ 고정 메모로 등록
+        </label>
+        <div style="flex:1"></div>
+        <button class="btn-secondary" id="cancelCaseNote">취소</button>
+        <button class="btn-primary" id="saveCaseNote">저장</button>
+      </div>
+    </div>`:''}
+
+    ${pinnedNotes.length>0?`<div style="margin-bottom:12px;font-size:12px;font-weight:600;color:#d97706">⭐ 고정 메모</div>`:''}
+    ${pinnedNotes.map(n=>`<div class="note-card pinned">
+      <div class="note-head">
+        <div style="display:flex;align-items:center;gap:8px">⭐ <span class="note-title">${esc(n.title)}</span></div>
+        <span class="note-date">${fdatetime(n.date)}</span>
+      </div>
+      <div style="font-size:11px;color:#3b82f6;margin-bottom:4px">📄 ${esc(n.docTitle)}</div>
+      <div class="note-body">${esc(n.content)}</div>
+      <div class="note-author">작성자: ${esc(n.author)}</div>
+    </div>`).join('')}
+
+    ${caseNotes.filter(n=>!n.pinned).length>0?`<div style="margin-bottom:12px;margin-top:${pinnedNotes.length?16:0}px;font-size:12px;font-weight:600;color:#64748b">일반 메모</div>`:''}
+    ${caseNotes.filter(n=>!n.pinned).map(n=>`<div class="note-card">
+      <div class="note-head">
+        <div style="display:flex;align-items:center;gap:8px"><span class="note-title">${esc(n.title)}</span></div>
+        <span class="note-date">${fdatetime(n.date)}</span>
+      </div>
+      <div style="font-size:11px;color:#3b82f6;margin-bottom:4px">📄 ${esc(n.docTitle)}</div>
+      <div class="note-body">${esc(n.content)}</div>
+      <div class="note-author">작성자: ${esc(n.author)}</div>
+    </div>`).join('')}
+
+    ${caseNotes.length===0&&!state.addingNote?'<div style="text-align:center;padding:24px;color:#94a3b8;font-size:13px">아직 메모가 없습니다. 사건에 대한 첫 메모를 추가해보세요.</div>':''}
+  </div>`;
 }
 
 function renderDetail(){
@@ -430,8 +918,8 @@ function renderDetail(){
 
 function renderSettings(){
   const tab=state.settingsTab;
-  const tabBtns=['sharepoint','users','tags'].map(t=>{
-    const labels={sharepoint:'SharePoint 연동',users:'사용자 권한',tags:'태그 관리'};
+  const tabBtns=['sharepoint','ai','users','tags'].map(t=>{
+    const labels={sharepoint:'SharePoint 연동',ai:'AI 연동',users:'사용자 권한',tags:'태그 관리'};
     return `<button class="tab-btn${tab===t?' active':''}" data-stab="${t}">${labels[t]}</button>`;
   }).join('');
 
@@ -467,6 +955,31 @@ function renderSettings(){
         <div class="step-card"><div class="step-num">2</div><div class="st">폴더 → 카테고리 매핑</div><div class="sd">SharePoint의 폴더 구조가 좌측 사이드바 카테고리 트리로 자동 반영됩니다.</div></div>
         <div class="step-card"><div class="step-num">3</div><div class="st">파일 목록 동기화</div><div class="sd">각 폴더 내 파일들의 메타데이터가 문서 목록에 표시됩니다. 원본 파일은 SharePoint에 그대로 유지됩니다.</div></div>
       </div>
+    </div>`;
+  } else if(tab==='ai'){
+    const savedKey=getApiKey();
+    const masked=savedKey?savedKey.substring(0,7)+'...'+savedKey.substring(savedKey.length-4):'';
+    body=`<div class="section"><h3>OpenAI API 연동</h3>
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">사건 요약 페이지에서 AI 자동 요약 기능을 사용하려면 OpenAI API 키가 필요합니다.</p>
+      <div class="form-grid">
+        <div class="form-field"><label>OpenAI API Key</label><input type="password" id="apiKeyInput" value="${esc(savedKey)}" placeholder="sk-..."></div>
+        <div class="form-field"><label>모델</label><select id="aiModelSelect"><option value="gpt-4o-mini" selected>GPT-4o Mini (빠름, 저비용)</option><option value="gpt-4o">GPT-4o (고품질)</option><option value="gpt-3.5-turbo">GPT-3.5 Turbo (최저비용)</option></select></div>
+      </div>
+      ${savedKey?`<div class="connected-status" style="margin-top:12px"><span class="sync-dot"></span>API 키 저장됨: ${esc(masked)}</div>`:''}
+      <div style="display:flex;gap:12px;margin-top:16px">
+        <button class="btn-primary-lg" id="saveApiKey" style="margin:0">API 키 저장</button>
+        ${savedKey?`<button class="btn-secondary-lg" id="testApiKey" style="margin:0">연결 테스트</button>`:''}
+        ${savedKey?`<button class="btn-secondary-lg" id="clearApiKey" style="margin:0;color:#dc2626;border-color:#fecaca">키 삭제</button>`:''}
+      </div>
+      <div id="apiTestResult"></div>
+    </div>
+    <div class="section"><h3>AI 요약 사용 방법</h3>
+      <div class="step-grid">
+        <div class="step-card"><div class="step-num">1</div><div class="st">API 키 입력</div><div class="sd">OpenAI에서 발급받은 API 키를 위에 입력하고 저장합니다. 키는 브라우저 로컬 스토리지에 저장됩니다.</div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="st">사건 요약 페이지 이동</div><div class="sd">사이드바에서 사건(하위 카테고리)을 클릭하면 사건 요약 페이지로 이동합니다.</div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="st">AI 요약 생성</div><div class="sd">"✨ AI 요약 생성" 버튼을 클릭하면 해당 사건의 문서와 메모를 분석하여 사건 요약, 핵심 이슈, 다음 조치사항을 자동 생성합니다.</div></div>
+      </div>
+      <div class="info-box blue" style="margin-top:16px"><strong>비용 안내:</strong> GPT-4o Mini 기준 사건 1건 요약 시 약 $0.01 미만 소요됩니다.<br><strong>보안 참고:</strong> 문서 본문 키워드와 메모 내용이 OpenAI API로 전송됩니다. 기밀 문서의 경우 사내 보안 정책을 확인하세요.<br>기업 환경에서는 Azure OpenAI를 권장합니다 (데이터가 회사 Azure 테넌트 내에서만 처리).</div>
     </div>`;
   } else if(tab==='users'){
     body=`<div class="section"><h3>사용자 권한 관리</h3>
@@ -523,7 +1036,7 @@ function renderFolderTree(){
 function bindEvents(){
   // Nav
   document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.onclick=()=>{
-    setState({page:el.dataset.page,selCat:null,selTag:null,selDoc:null,search:'',addingNote:false});
+    setState({page:el.dataset.page,selCat:null,selTag:null,selDoc:null,search:'',addingNote:false,caseSummary:null});
   });
   // Category
   document.querySelectorAll('.cat-item[data-cat]').forEach(el=>el.onclick=()=>{
@@ -532,7 +1045,13 @@ function bindEvents(){
     if(toggle){
       state.expandedCats[toggle]=!state.expandedCats[toggle];
     }
-    setState({selCat:state.selCat===id?null:id, page:state.page==='dashboard'?'documents':state.page});
+    // 하위 카테고리 클릭 시 사건 요약 페이지 진입
+    const cat=CATEGORIES.find(c=>c.id===id);
+    if(cat && cat.parentId && CASE_SUMMARIES[id]){
+      setState({selCat:id, caseSummary:id, page:'documents', selDoc:null});
+    } else {
+      setState({selCat:state.selCat===id?null:id, caseSummary:null, page:state.page==='dashboard'?'documents':state.page});
+    }
   });
   // Search
   const si=document.getElementById('searchInput');
@@ -579,6 +1098,78 @@ function bindEvents(){
     conBtn.textContent='연결 중...';
     conBtn.disabled=true;
     setTimeout(()=>setState({spConnected:true}),1000);
+  };
+  // Back from case summary
+  const backBtn=document.getElementById('backFromCase');
+  if(backBtn) backBtn.onclick=()=>{
+    const cat=CATEGORIES.find(c=>c.id===state.caseSummary);
+    setState({caseSummary:null, selCat:cat?cat.parentId:null, addingNote:false});
+  };
+  // Case note add/save
+  const acnb=document.getElementById('addCaseNoteBtn');
+  if(acnb) acnb.onclick=()=>setState({addingNote:!state.addingNote});
+  const ccn=document.getElementById('cancelCaseNote');
+  if(ccn) ccn.onclick=()=>setState({addingNote:false});
+  const scn=document.getElementById('saveCaseNote');
+  if(scn) scn.onclick=()=>{
+    const title=document.getElementById('caseNoteTitle').value||'메모';
+    const content=document.getElementById('caseNoteContent').value;
+    if(!content.trim()) return;
+    const selDocId=document.getElementById('caseNoteDoc').value;
+    const pinned=document.getElementById('caseNotePinned').checked;
+    // 문서를 선택했으면 해당 문서에, 아니면 사건의 첫 번째 문서에 연결
+    const catId=state.caseSummary;
+    const caseDocs=DOCUMENTS.filter(d=>d.catId===catId);
+    const docId=selDocId||( caseDocs.length>0?caseDocs[0].id:null);
+    if(!docId) return;
+    notes.unshift({id:'n-'+Date.now(),docId:docId,author:'김법무',title:title,content:content,pinned:pinned,date:new Date().toISOString()});
+    const doc=DOCUMENTS.find(d=>d.id===docId);
+    if(doc) doc.noteCount++;
+    setState({addingNote:false});
+  };
+  // Timeline doc click
+  document.querySelectorAll('.tl-card[data-doc]').forEach(el=>el.onclick=()=>{
+    const doc=DOCUMENTS.find(d=>d.id===el.dataset.doc);
+    if(doc) setState({selDoc:doc,addingNote:false});
+  });
+  // AI Summary button
+  const aiBtn=document.getElementById('aiSummaryBtn');
+  if(aiBtn) aiBtn.onclick=()=>generateAISummary(state.caseSummary);
+  // Chat send
+  const chatSend=document.getElementById('chatSendBtn');
+  const chatInput=document.getElementById('chatInput');
+  if(chatSend&&chatInput){
+    const doSend=()=>{const msg=chatInput.value.trim();if(msg){sendChatMessage(state.caseSummary,msg);}};
+    chatSend.onclick=doSend;
+    chatInput.onkeydown=(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();doSend();}};
+  }
+  // Chat suggest buttons
+  document.querySelectorAll('.chat-suggest').forEach(el=>el.onclick=()=>{
+    sendChatMessage(state.caseSummary,el.textContent);
+  });
+  // API key save
+  const saveKey=document.getElementById('saveApiKey');
+  if(saveKey) saveKey.onclick=()=>{
+    const key=document.getElementById('apiKeyInput').value.trim();
+    if(!key){alert('API 키를 입력해주세요.');return;}
+    setApiKey(key);
+    setState({});
+  };
+  // API key test
+  const testKey=document.getElementById('testApiKey');
+  if(testKey) testKey.onclick=async()=>{
+    const resultEl=document.getElementById('apiTestResult');
+    resultEl.innerHTML='<div class="info-box blue" style="margin-top:12px">테스트 중...</div>';
+    try{
+      const res=await fetch('https://api.openai.com/v1/models',{headers:{'Authorization':'Bearer '+getApiKey()}});
+      if(res.ok) resultEl.innerHTML='<div class="info-box green" style="margin-top:12px">✅ API 연결 성공! 정상적으로 사용할 수 있습니다.</div>';
+      else{const e=await res.json().catch(()=>({}));resultEl.innerHTML='<div class="info-box" style="margin-top:12px;background:#fee2e2;border:1px solid #fecaca;color:#dc2626">❌ 연결 실패: '+(e.error?.message||res.status)+'</div>';}
+    }catch(e){resultEl.innerHTML='<div class="info-box" style="margin-top:12px;background:#fee2e2;border:1px solid #fecaca;color:#dc2626">❌ 네트워크 오류: '+e.message+'</div>';}
+  };
+  // API key clear
+  const clearKey=document.getElementById('clearApiKey');
+  if(clearKey) clearKey.onclick=()=>{
+    if(confirm('저장된 API 키를 삭제하시겠습니까?')){localStorage.removeItem('openai_api_key');setState({});}
   };
 }
 
