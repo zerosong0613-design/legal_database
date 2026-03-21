@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>법무 문서 데이터베이스</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', -apple-system, sans-serif; background: #f8fafc; color: #1e293b; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+
+/* Layout */
+.app { display: flex; min-height: 100vh; }
+.sidebar { width: 260px; height: 100vh; background: #fff; border-right: 1px solid #e2e8f0; position: fixed; left: 0; top: 0; z-index: 10; display: flex; flex-direction: column; }
+.main { margin-left: 260px; flex: 1; display: flex; flex-direction: column; }
+.header { height: 64px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: space-between; padding: 0 32px; position: sticky; top: 0; z-index: 5; }
+.content { padding: 24px 32px; flex: 1; }
+
+/* Sidebar */
+.logo { padding: 20px 20px 16px; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 32px; height: 32px; border-radius: 8px; background: linear-gradient(135deg, #1e40af, #3b82f6); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; }
+.logo-text { font-weight: 700; font-size: 16px; }
+.nav { padding: 12px 12px 8px; }
+.nav-item { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: none; border-radius: 8px; background: none; color: #475569; cursor: pointer; font-size: 14px; text-align: left; margin-bottom: 2px; }
+.nav-item:hover { background: #f1f5f9; }
+.nav-item.active { background: #eff6ff; color: #1e40af; font-weight: 600; }
+.cat-section { padding: 8px 12px; border-top: 1px solid #e2e8f0; flex: 1; overflow-y: auto; }
+.cat-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; padding: 8px 12px 4px; letter-spacing: 0.05em; }
+.cat-item { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 6px 12px; border: none; border-radius: 6px; background: none; color: #475569; cursor: pointer; font-size: 13px; text-align: left; }
+.cat-item:hover { background: #f1f5f9; }
+.cat-item.active { background: #e0e7ff; color: #1e40af; font-weight: 600; }
+.cat-item .count { font-size: 11px; color: #94a3b8; }
+.cat-child { padding-left: 16px; }
+.sync-status { padding: 16px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; }
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #16a34a; display: inline-block; margin-right: 6px; }
+
+/* Header */
+.header h1 { font-size: 20px; font-weight: 700; }
+.search-box { position: relative; }
+.search-box input { width: 360px; padding: 8px 12px 8px 36px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; outline: none; background: #f8fafc; }
+.search-box svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); }
+.user-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg, #6366f1, #8b5cf6); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 13px; cursor: pointer; }
+
+/* Stats */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; }
+.stat-card .label { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+.stat-card .value { font-size: 28px; font-weight: 700; }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.card { padding: 20px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; }
+.card h3 { font-size: 14px; font-weight: 700; margin-bottom: 16px; }
+.bar-row { margin-bottom: 12px; }
+.bar-row .bar-label { display: flex; justify-content: space-between; margin-bottom: 4px; font-size: 13px; }
+.bar-row .bar-label span:last-child { font-weight: 600; }
+.bar-track { height: 6px; background: #f1f5f9; border-radius: 3px; overflow: hidden; }
+.bar-fill { height: 100%; background: #3b82f6; border-radius: 3px; }
+.sync-box { padding: 16px; background: #f0fdf4; border-radius: 10px; border: 1px solid #bbf7d0; margin-bottom: 16px; }
+.sync-box .sync-title { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; font-weight: 600; color: #16a34a; }
+.sync-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.sync-mini { padding: 12px; background: #f8fafc; border-radius: 8px; text-align: center; }
+.sync-mini .num { font-size: 20px; font-weight: 700; color: #3b82f6; }
+.sync-mini .txt { font-size: 11px; color: #94a3b8; }
+.recent-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
+.recent-item .title { font-size: 13px; font-weight: 500; }
+.recent-item .date { font-size: 12px; color: #94a3b8; }
+
+/* Tags filter */
+.filter-bar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-bar .label { font-size: 13px; color: #64748b; margin-right: 4px; }
+.tag-btn { padding: 4px 12px; border-radius: 6px; border: 1px solid #e2e8f0; background: #fff; color: #475569; font-size: 12px; cursor: pointer; font-weight: 500; }
+.tag-btn.active { background: #1e40af; color: #fff; border-color: #1e40af; }
+.filter-count { flex: 1; text-align: right; font-size: 13px; color: #94a3b8; }
+
+/* Table */
+.doc-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+.doc-table th { padding: 12px 16px; text-align: left; font-size: 12px; font-weight: 600; color: #64748b; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+.doc-table td { padding: 12px 16px; border-bottom: 1px solid #f1f5f9; }
+.doc-table tr:hover td { background: #f8fafc; }
+.doc-table tr { cursor: pointer; }
+.doc-title-cell { display: flex; align-items: center; gap: 10px; }
+.file-icon { min-width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.doc-title { font-weight: 500; font-size: 13px; margin-bottom: 3px; }
+.doc-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+.tag { font-size: 10px; padding: 1px 6px; border-radius: 4px; font-weight: 500; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 4px; font-weight: 500; }
+.note-count { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #3b82f6; font-weight: 500; }
+.empty-msg { padding: 48px; text-align: center; color: #94a3b8; font-size: 14px; }
+
+/* Detail panel */
+.overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.2); z-index: 15; }
+.detail-panel { position: fixed; top: 0; right: 0; width: 680px; height: 100vh; background: #fff; box-shadow: -4px 0 24px rgba(0,0,0,0.08); z-index: 20; display: flex; flex-direction: column; overflow: hidden; }
+.detail-header { padding: 20px 24px; border-bottom: 1px solid #e2e8f0; }
+.close-btn { border: none; background: none; cursor: pointer; color: #94a3b8; padding: 4px; }
+.detail-info { padding: 16px 24px; border-bottom: 1px solid #e2e8f0; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.info-item .il { font-size: 11px; color: #94a3b8; margin-bottom: 2px; }
+.info-item .iv { font-size: 13px; font-weight: 500; }
+.sp-btn { margin-top: 12px; padding: 8px 16px; background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; border-radius: 8px; font-size: 13px; cursor: pointer; font-weight: 500; }
+.notes-section { flex: 1; overflow-y: auto; padding: 16px 24px; }
+.notes-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.notes-header h3 { font-size: 14px; font-weight: 700; }
+.btn-primary { padding: 6px 14px; background: #1e40af; color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-weight: 500; }
+.btn-secondary { padding: 6px 14px; background: #fff; color: #64748b; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; cursor: pointer; }
+.note-form { padding: 16px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 12px; }
+.note-form input, .note-form textarea { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 13px; outline: none; font-family: inherit; }
+.note-form textarea { resize: vertical; margin-top: 8px; }
+.note-form .actions { display: flex; gap: 8px; margin-top: 8px; justify-content: flex-end; }
+.note-card { padding: 14px 16px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 10px; background: #f8fafc; }
+.note-card.pinned { background: #fffbeb; border-color: #fde68a; }
+.note-card .note-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.note-card .note-title { font-weight: 600; font-size: 13px; }
+.note-card .note-date { font-size: 11px; color: #94a3b8; }
+.note-card .note-body { font-size: 13px; color: #475569; line-height: 1.6; white-space: pre-wrap; }
+.note-card .note-author { margin-top: 8px; font-size: 11px; color: #94a3b8; }
+
+/* Settings */
+.tabs { display: flex; gap: 2px; margin-bottom: 24px; border-bottom: 1px solid #e2e8f0; }
+.tab-btn { padding: 10px 20px; border: none; border-bottom: 2px solid transparent; background: none; color: #64748b; font-size: 14px; cursor: pointer; margin-bottom: -1px; }
+.tab-btn.active { border-bottom-color: #1e40af; color: #1e40af; font-weight: 600; }
+.section { padding: 20px 24px; background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+.section h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-field label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+.form-field input, .form-field select { width: 100%; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; outline: none; }
+.info-box { margin-top: 16px; padding: 12px 16px; border-radius: 8px; font-size: 13px; line-height: 1.6; }
+.info-box.blue { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+.info-box.green { background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d; }
+.btn-primary-lg { padding: 9px 20px; background: #1e40af; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; margin-top: 12px; }
+.btn-secondary-lg { padding: 9px 20px; background: #fff; color: #475569; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; }
+.folder-tree { border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; max-height: 360px; overflow-y: auto; background: #fafbfc; }
+.folder-node { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 6px; cursor: pointer; font-size: 13px; }
+.folder-node:hover { background: #f1f5f9; }
+.folder-node.selected { background: #eff6ff; color: #1e40af; font-weight: 600; }
+.folder-node .root-badge { font-size: 10px; padding: 1px 6px; border-radius: 4px; background: #1e40af; color: #fff; margin-left: 4px; }
+.step-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.step-card { padding: 16px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; background: #1e40af; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; margin-bottom: 10px; }
+.step-card .st { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.step-card .sd { font-size: 12px; color: #64748b; line-height: 1.5; }
+.user-table { width: 100%; border-collapse: collapse; }
+.user-table th { padding: 10px 14px; text-align: left; font-size: 12px; font-weight: 600; color: #64748b; background: #f8fafc; border-bottom: 1px solid #e2e8f0; }
+.user-table td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid #f1f5f9; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.tag-manage { display: flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 8px; border: 1px solid #e2e8f0; background: #fff; }
+.tag-manage .dot { width: 12px; height: 12px; border-radius: 3px; }
+.tag-manage span { font-size: 13px; font-weight: 500; }
+.tag-manage button { border: none; background: none; color: #94a3b8; cursor: pointer; font-size: 16px; }
+.add-tag-row { display: flex; gap: 8px; }
+.add-tag-row input[type=text] { flex: 1; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 13px; outline: none; }
+.add-tag-row input[type=color] { width: 40px; height: 38px; border: 1px solid #e2e8f0; border-radius: 6px; cursor: pointer; }
+.connected-status { margin-top: 8px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #16a34a; }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+// ============ DATA ============
+const CATEGORIES = [
+  { id:"cat-2026", name:"2026", parentId:null, count:8 },
+  { id:"cat-2026-cp", name:"CP사건 (공정거래)", parentId:"cat-2026", count:3 },
+  { id:"cat-2026-ma", name:"M&A건 (DEF인수)", parentId:"cat-2026", count:4 },
+  { id:"cat-2026-labor", name:"노동소송건", parentId:"cat-2026", count:1 },
+  { id:"cat-2025", name:"2025", parentId:null, count:15 },
+  { id:"cat-2025-patent", name:"XYZ 특허소송", parentId:"cat-2025", count:5 },
+  { id:"cat-2025-nda", name:"NDA/비밀유지", parentId:"cat-2025", count:3 },
+  { id:"cat-2025-lease", name:"본사 임대차", parentId:"cat-2025", count:2 },
+  { id:"cat-2025-supply", name:"JKL 원자재 공급건", parentId:"cat-2025", count:3 },
+  { id:"cat-2025-license", name:"ABC 라이선스건", parentId:"cat-2025", count:2 },
+  { id:"cat-2024", name:"2024", parentId:null, count:6 },
+  { id:"cat-2024-reg", name:"사업자등록 갱신", parentId:"cat-2024", count:2 },
+  { id:"cat-2024-compliance", name:"내부통제 정비", parentId:"cat-2024", count:4 },
+  { id:"cat-board", name:"이사회자료", parentId:null, count:12 },
+  { id:"cat-board-2026", name:"2026 이사회", parentId:"cat-board", count:4 },
+  { id:"cat-board-2025", name:"2025 이사회", parentId:"cat-board", count:5 },
+  { id:"cat-board-2024", name:"2024 이사회", parentId:"cat-board", count:3 },
+  { id:"cat-policy", name:"규정/정책", parentId:null, count:8 },
+];
+
+const TAGS = [
+  { id:"tag-1", name:"긴급", color:"#dc2626" },
+  { id:"tag-2", name:"검토완료", color:"#16a34a" },
+  { id:"tag-3", name:"검토중", color:"#d97706" },
+  { id:"tag-4", name:"갱신필요", color:"#9333ea" },
+  { id:"tag-5", name:"만료예정", color:"#ea580c" },
+  { id:"tag-6", name:"NDA", color:"#0891b2" },
+  { id:"tag-7", name:"소송", color:"#7c3aed" },
+  { id:"tag-8", name:"이사회", color:"#0369a1" },
+  { id:"tag-9", name:"M&A", color:"#b91c1c" },
+  { id:"tag-10", name:"CP(공정거래)", color:"#4f46e5" },
+];
+
+const DOCUMENTS = [
+  { id:"doc-1", title:"공정위 시정명령서", fileName:"FTC_Corrective_Order_2026.pdf", ext:"pdf", size:3200000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-01-15", parties:["공정거래위원회","당사"], conf:"confidential", created:"2026-01-16T09:00:00Z", noteCount:4, tagIds:["tag-1","tag-10"] },
+  { id:"doc-2", title:"CP프로그램 이행점검 보고서", fileName:"CP_Compliance_Report_Q1_2026.docx", ext:"docx", size:1850000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-02-20", parties:[], conf:"internal", created:"2026-02-21T10:30:00Z", noteCount:1, tagIds:["tag-3","tag-10"] },
+  { id:"doc-3", title:"외부 법무법인 의견서 (과징금 감경)", fileName:"Legal_Opinion_FTC_Penalty.pdf", ext:"pdf", size:2100000, spPath:"/법무/2026/CP사건", catId:"cat-2026-cp", status:"active", date:"2026-02-28", parties:["법무법인 광장"], conf:"confidential", created:"2026-03-01T09:00:00Z", noteCount:3, tagIds:["tag-1","tag-10"] },
+  { id:"doc-4", title:"DEF Corp 인수 LOI (의향서)", fileName:"DEF_LOI_2026.pdf", ext:"pdf", size:1500000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-01-10", parties:["DEF Corp","당사"], conf:"confidential", created:"2026-01-11T11:00:00Z", noteCount:2, tagIds:["tag-9"] },
+  { id:"doc-5", title:"DEF Corp 실사보고서 (법률)", fileName:"DEF_Legal_DD_Report.pdf", ext:"pdf", size:8500000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-02-15", parties:["법무법인 한빛","DEF Corp"], conf:"confidential", created:"2026-02-16T14:00:00Z", noteCount:6, tagIds:["tag-1","tag-3","tag-9"] },
+  { id:"doc-6", title:"DEF Corp SPA (주식매매계약서) 초안", fileName:"DEF_SPA_Draft_v2.docx", ext:"docx", size:4200000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-03-10", parties:["DEF Corp","당사"], conf:"confidential", created:"2026-03-11T09:00:00Z", noteCount:5, tagIds:["tag-3","tag-9"] },
+  { id:"doc-7", title:"DEF Corp 기업결합 신고서", fileName:"DEF_Merger_Filing.pdf", ext:"pdf", size:3100000, spPath:"/법무/2026/MA건_DEF인수", catId:"cat-2026-ma", status:"active", date:"2026-03-18", parties:["공정거래위원회"], conf:"confidential", created:"2026-03-19T10:00:00Z", noteCount:1, tagIds:["tag-9","tag-10"] },
+  { id:"doc-8", title:"부당해고 구제신청서 (홍OO)", fileName:"Labor_Case_Hong_2026.pdf", ext:"pdf", size:2400000, spPath:"/법무/2026/노동소송", catId:"cat-2026-labor", status:"active", date:"2026-02-05", parties:["홍OO","당사"], conf:"confidential", created:"2026-02-06T09:00:00Z", noteCount:3, tagIds:["tag-7","tag-3"] },
+  { id:"doc-9", title:"XYZ 특허 침해 소송 소장", fileName:"XYZ_Patent_Complaint.pdf", ext:"pdf", size:5200000, spPath:"/법무/2025/XYZ특허소송", catId:"cat-2025-patent", status:"active", date:"2025-06-20", parties:["XYZ Technologies","당사"], conf:"confidential", created:"2025-06-21T11:00:00Z", noteCount:5, tagIds:["tag-7","tag-3"] },
+  { id:"doc-10", title:"XYZ 특허소송 답변서", fileName:"XYZ_Patent_Response.pdf", ext:"pdf", size:4300000, spPath:"/법무/2025/XYZ특허소송", catId:"cat-2025-patent", status:"active", date:"2025-08-20", parties:["XYZ Technologies","당사"], conf:"confidential", created:"2025-08-21T11:00:00Z", noteCount:3, tagIds:["tag-7","tag-2"] },
+  { id:"doc-11", title:"GHI 파트너 NDA", fileName:"GHI_NDA_2025.pdf", ext:"pdf", size:650000, spPath:"/법무/2025/NDA", catId:"cat-2025-nda", status:"active", date:"2025-04-10", parties:["GHI Partners","당사"], conf:"confidential", created:"2025-04-11T13:00:00Z", noteCount:1, tagIds:["tag-6","tag-2"] },
+  { id:"doc-12", title:"본사 사무실 임대차 계약서", fileName:"Office_Lease_2025.docx", ext:"docx", size:1850000, spPath:"/법무/2025/본사임대차", catId:"cat-2025-lease", status:"active", date:"2025-01-10", parties:["서울빌딩 주식회사","당사"], conf:"internal", created:"2025-01-11T10:30:00Z", noteCount:2, tagIds:["tag-5"] },
+  { id:"doc-13", title:"JKL 원자재 공급계약서", fileName:"JKL_Supply_Agreement.docx", ext:"docx", size:1750000, spPath:"/법무/2025/JKL원자재공급", catId:"cat-2025-supply", status:"active", date:"2025-07-05", parties:["JKL Industries","당사"], conf:"internal", created:"2025-07-06T09:00:00Z", noteCount:2, tagIds:["tag-3"] },
+  { id:"doc-14", title:"ABC Corp 소프트웨어 라이선스 계약서", fileName:"ABC_License_Agreement_2025.pdf", ext:"pdf", size:2450000, spPath:"/법무/2025/ABC라이선스", catId:"cat-2025-license", status:"active", date:"2025-03-15", parties:["ABC Corp","당사"], conf:"confidential", created:"2025-03-16T09:00:00Z", noteCount:3, tagIds:["tag-2"] },
+  { id:"doc-15", title:"사업자 등록증 갱신 서류", fileName:"Business_Registration_Renewal.pdf", ext:"pdf", size:420000, spPath:"/법무/2024/사업자등록", catId:"cat-2024-reg", status:"archived", date:"2024-12-15", parties:[], conf:"internal", created:"2024-12-16T10:00:00Z", noteCount:0, tagIds:[] },
+  { id:"doc-16", title:"내부 컴플라이언스 규정 (2024 개정)", fileName:"Compliance_Policy_2024.pdf", ext:"pdf", size:3100000, spPath:"/법무/2024/내부통제", catId:"cat-2024-compliance", status:"archived", date:"2024-06-01", parties:[], conf:"internal", created:"2024-06-02T08:00:00Z", noteCount:0, tagIds:["tag-4"] },
+  { id:"doc-17", title:"제42기 정기이사회 안건 (DEF 인수 승인)", fileName:"Board_42_DEF_Approval.pptx", ext:"pptx", size:6500000, spPath:"/법무/이사회자료/2026", catId:"cat-board-2026", status:"active", date:"2026-03-05", parties:[], conf:"confidential", created:"2026-03-06T08:00:00Z", noteCount:2, tagIds:["tag-8","tag-9"] },
+  { id:"doc-18", title:"제42기 임시이사회 의사록", fileName:"Board_42_Extraordinary_Minutes.docx", ext:"docx", size:1200000, spPath:"/법무/이사회자료/2026", catId:"cat-board-2026", status:"active", date:"2026-01-20", parties:[], conf:"confidential", created:"2026-01-21T09:00:00Z", noteCount:1, tagIds:["tag-8","tag-2"] },
+  { id:"doc-19", title:"제41기 정기이사회 의사록", fileName:"Board_41_Regular_Minutes.docx", ext:"docx", size:1800000, spPath:"/법무/이사회자료/2025", catId:"cat-board-2025", status:"active", date:"2025-03-25", parties:[], conf:"confidential", created:"2025-03-26T09:00:00Z", noteCount:1, tagIds:["tag-8","tag-2"] },
+  { id:"doc-20", title:"개인정보 처리방침 (v3.2)", fileName:"Privacy_Policy_v3.2.pdf", ext:"pdf", size:980000, spPath:"/법무/규정", catId:"cat-policy", status:"active", date:"2025-06-01", parties:[], conf:"public", created:"2025-06-02T08:00:00Z", noteCount:1, tagIds:["tag-2"] },
+];
+
+const NOTES = [
+  { id:"n1", docId:"doc-1", author:"김법무", title:"시정명령 핵심 내용", content:"- 시정명령 유형: 가격담합 관련 시정조치\n- 과징금: 약 50억원 (감경 여부 검토 중)\n- 이행기한: 2026.04.30\n- 향후 재발방지 프로그램 제출 필요", pinned:true, date:"2026-01-16T10:00:00Z" },
+  { id:"n2", docId:"doc-1", author:"이대리", title:"대응 전략 논의", content:"법무법인 광장과 미팅 결과:\n- 자진시정 감경 (20%) 가능성 있음\n- CP프로그램 이행실적 제출로 추가 감경 기대\n- 행정소송 병행 여부는 4월 중 결정", pinned:false, date:"2026-01-20T14:30:00Z" },
+  { id:"n3", docId:"doc-5", author:"김법무", title:"실사 주요 리스크", content:"DEF Corp 법률실사 결과 핵심 이슈:\n1. 미해결 노동소송 2건 (예상 패소금액 ~3억)\n2. 환경규제 위반 이력 (과태료 납부 완료)\n3. 핵심 특허 2건 만료 임박 (2027.06)\n4. 주주간계약 중 Tag-along 조항 해소 필요\n\n법무법인 의견: 인수가 조정 또는 에스크로 5억 설정 권고", pinned:true, date:"2026-02-17T15:00:00Z" },
+  { id:"n4", docId:"doc-6", author:"박변호사", title:"SPA 검토 포인트", content:"- 제5조 진술보증: 환경/노동 관련 진술보증 범위 확대 필요\n- 제8조 손해배상: 상한 인수가의 30% → 50%로 협상 중\n- 제12조 선행조건: 공정위 기업결합 승인 포함\n- Closing 예정일: 2026.06.30", pinned:true, date:"2026-03-12T09:00:00Z" },
+  { id:"n5", docId:"doc-9", author:"김법무", title:"소송 경과", content:"XYZ 측 특허 3건 중 2건은 무효 사유 확인됨. 답변서에 선행기술 자료 첨부 완료.\n\n다음 기일: 2025년 10월 15일\n담당 법원: 서울중앙지방법원\n담당 재판부: 민사합의50부", pinned:true, date:"2025-08-22T09:00:00Z" },
+  { id:"n6", docId:"doc-17", author:"김법무", title:"이사회 결의 사항", content:"DEF Corp 인수 건 만장일치 승인.\n- 인수가: 000억원\n- 지급방식: 현금 70% + 주식교환 30%\n- 실사 완료 후 최종 가격 조정 예정", pinned:false, date:"2026-03-06T10:00:00Z" },
+  { id:"n7", docId:"doc-8", author:"이대리", title:"노동위원회 일정", content:"홍OO 부당해고 구제신청 건\n- 조사기일: 2026.03.25\n- 당사 참석자: 인사팀장, 법무담당\n- 준비서류: 근무평가서, 징계위원회 의사록, 취업규칙", pinned:false, date:"2026-02-10T11:00:00Z" },
+];
+
+// ============ HELPERS ============
+function fmt(b){if(b<1024)return b+' B';if(b<1048576)return (b/1024).toFixed(1)+' KB';return (b/1048576).toFixed(1)+' MB';}
+function fdate(s){const d=new Date(s);return d.getFullYear()+'년 '+(d.getMonth()+1)+'월 '+d.getDate()+'일';}
+function fdatetime(s){const d=new Date(s);return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0')+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');}
+function ficon(e){return {pdf:'PDF',docx:'DOC',doc:'DOC',xlsx:'XLS',pptx:'PPT',hwp:'HWP'}[e]||'FILE';}
+function fcolor(e){return {pdf:'#dc2626',docx:'#2563eb',doc:'#2563eb',xlsx:'#16a34a',pptx:'#ea580c',hwp:'#0891b2'}[e]||'#6b7280';}
+function catName(id){return (CATEGORIES.find(c=>c.id===id)||{}).name||'미분류';}
+function getTags(ids){return ids.map(id=>TAGS.find(t=>t.id===id)).filter(Boolean);}
+function confBadge(c){const m={public:{bg:'#dcfce7',c:'#16a34a',l:'공개'},internal:{bg:'#e0e7ff',c:'#4f46e5',l:'사내'},confidential:{bg:'#fee2e2',c:'#dc2626',l:'기밀'}};const v=m[c]||m.internal;return `<span class="badge" style="background:${v.bg};color:${v.c}">${v.l}</span>`;}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// ============ STATE ============
+let state = { page:'dashboard', search:'', selCat:null, selTag:null, selDoc:null, addingNote:false, settingsTab:'sharepoint', spConnected:false, expandedCats:{} };
+// Auto-expand root categories
+CATEGORIES.filter(c=>!c.parentId).forEach(c=>state.expandedCats[c.id]=true);
+
+// Clone notes so we can add new ones
+let notes = [...NOTES];
+
+function setState(patch){ Object.assign(state, patch); render(); }
+
+// ============ RENDER ============
+function render(){
+  const app = document.getElementById('app');
+  app.innerHTML = renderSidebar() + `<div class="main">${renderHeader()}<div class="content">${renderContent()}</div></div>` + (state.selDoc ? renderDetail() : '');
+  bindEvents();
+}
+
+function renderSidebar(){
+  const navItems = [
+    {id:'dashboard',label:'대시보드',icon:'⊞'},
+    {id:'documents',label:'문서 목록',icon:'📄'},
+    {id:'search',label:'검색',icon:'🔍'},
+    {id:'archive',label:'아카이브',icon:'📦'},
+    {id:'settings',label:'설정',icon:'⚙'},
+  ];
+  const roots = CATEGORIES.filter(c=>!c.parentId);
+  let catHtml = '';
+  roots.forEach(r=>{
+    const isExp = state.expandedCats[r.id];
+    const isAct = state.selCat===r.id;
+    catHtml += `<button class="cat-item${isAct?' active':''}" data-cat="${r.id}" data-toggle="${r.id}"><span>${esc(r.name)}</span><span class="count">${r.count}</span></button>`;
+    if(isExp){
+      const kids = CATEGORIES.filter(c=>c.parentId===r.id);
+      kids.forEach(k=>{
+        const kAct = state.selCat===k.id;
+        catHtml += `<div class="cat-child"><button class="cat-item${kAct?' active':''}" data-cat="${k.id}"><span>${esc(k.name)}</span><span class="count">${k.count}</span></button></div>`;
+      });
+    }
+  });
+
+  return `<aside class="sidebar">
+    <div class="logo"><div class="logo-icon">LG</div><span class="logo-text">법무 문서 DB</span></div>
+    <nav class="nav">${navItems.map(n=>`<button class="nav-item${state.page===n.id?' active':''}" data-page="${n.id}">${n.icon} ${n.label}</button>`).join('')}</nav>
+    <div class="cat-section"><div class="cat-label">카테고리</div>${catHtml}</div>
+    <div class="sync-status"><div><span class="sync-dot"></span>동기화 상태: 정상</div><div>마지막 동기화: 2026.03.21 06:02</div></div>
+  </aside>`;
+}
+
+function renderHeader(){
+  const titles = {dashboard:'대시보드',documents:'문서 목록',search:'검색',archive:'아카이브',settings:'설정'};
+  return `<header class="header">
+    <h1>${titles[state.page]}</h1>
+    <div style="display:flex;align-items:center;gap:16px">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="searchInput" type="text" value="${esc(state.search)}" placeholder="문서 제목, 내용, 태그로 검색...">
+      </div>
+      <div class="user-avatar">KM</div>
+    </div>
+  </header>`;
+}
+
+function getFilteredDocs(){
+  let docs = DOCUMENTS;
+  if(state.selCat) docs = docs.filter(d=>d.catId===state.selCat);
+  if(state.selTag) docs = docs.filter(d=>d.tagIds.includes(state.selTag));
+  if(state.page==='archive') docs = docs.filter(d=>d.status==='archived');
+  else if(state.page!=='search') docs = docs.filter(d=>d.status==='active');
+  if(state.search){
+    const q=state.search.toLowerCase();
+    docs=docs.filter(d=>d.title.toLowerCase().includes(q)||d.fileName.toLowerCase().includes(q)||d.parties.some(p=>p.toLowerCase().includes(q))||getTags(d.tagIds).some(t=>t.name.toLowerCase().includes(q)));
+  }
+  return docs;
+}
+
+function renderContent(){
+  if(state.page==='dashboard') return renderDashboard();
+  if(state.page==='settings') return renderSettings();
+  return renderDocList();
+}
+
+function renderDashboard(){
+  const active=DOCUMENTS.filter(d=>d.status==='active').length;
+  const totalNotes=DOCUMENTS.reduce((s,d)=>s+d.noteCount,0);
+  const roots=CATEGORIES.filter(c=>!c.parentId);
+  const recent=DOCUMENTS.filter(d=>d.status==='active').slice(0,5);
+
+  return `<div class="stats-grid">
+    <div class="stat-card"><div class="label">전체 문서</div><div class="value" style="color:#3b82f6">${DOCUMENTS.length}</div></div>
+    <div class="stat-card"><div class="label">활성 문서</div><div class="value" style="color:#16a34a">${active}</div></div>
+    <div class="stat-card"><div class="label">작성된 메모</div><div class="value" style="color:#8b5cf6">${totalNotes}</div></div>
+    <div class="stat-card"><div class="label">카테고리</div><div class="value" style="color:#ea580c">${roots.length}</div></div>
+  </div>
+  <div class="two-col">
+    <div class="card"><h3>카테고리별 문서 현황</h3>${roots.map(r=>`<div class="bar-row"><div class="bar-label"><span style="color:#475569">${esc(r.name)}</span><span>${r.count}</span></div><div class="bar-track"><div class="bar-fill" style="width:${(r.count/20)*100}%"></div></div></div>`).join('')}</div>
+    <div class="card"><h3>동기화 상태</h3>
+      <div class="sync-box"><div class="sync-title"><span class="sync-dot"></span>정상 동기화됨</div><div style="font-size:12px;color:#64748b">마지막 동기화: 2026.03.21 06:02</div></div>
+      <div class="sync-mini-grid"><div class="sync-mini"><div class="num">3</div><div class="txt">신규 파일</div></div><div class="sync-mini"><div class="num" style="color:#8b5cf6">7</div><div class="txt">수정 파일</div></div></div>
+      <button class="btn-primary-lg" style="width:100%;margin-top:16px">수동 동기화 시작</button>
+    </div>
+  </div>
+  <div class="card"><h3>최근 등록 문서</h3>${recent.map(d=>{
+    const tags=getTags(d.tagIds);
+    return `<div class="recent-item"><div style="display:flex;align-items:center;gap:10px"><span class="title">${esc(d.title)}</span>${tags.slice(0,2).map(t=>`<span class="tag" style="background:${t.color}18;color:${t.color}">${esc(t.name)}</span>`).join('')}</div><span class="date">${fdatetime(d.created)}</span></div>`;
+  }).join('')}</div>`;
+}
+
+function renderDocList(){
+  const docs=getFilteredDocs();
+  const tagBtns=TAGS.map(t=>{
+    const isAct=state.selTag===t.id;
+    return `<button class="tag-btn${isAct?' active':''}" data-tag="${t.id}" style="${isAct?`border-color:${t.color};background:${t.color}18;color:${t.color}`:''}">${esc(t.name)}</button>`;
+  }).join('');
+
+  const rows=docs.map(d=>{
+    const tags=getTags(d.tagIds);
+    const c=fcolor(d.ext);
+    return `<tr data-doc="${d.id}">
+      <td><div class="doc-title-cell"><div class="file-icon" style="background:${c}15;color:${c}">${ficon(d.ext)}</div><div><div class="doc-title">${esc(d.title)}</div><div class="doc-tags">${tags.map(t=>`<span class="tag" style="background:${t.color}18;color:${t.color}">${esc(t.name)}</span>`).join('')}</div></div></div></td>
+      <td style="font-size:12px;color:#64748b;text-transform:uppercase">.${d.ext}</td>
+      <td style="font-size:12px;color:#475569">${catName(d.catId)}</td>
+      <td style="font-size:12px;color:#475569">${fdate(d.date)}</td>
+      <td style="font-size:12px;color:#94a3b8">${fmt(d.size)}</td>
+      <td>${d.noteCount>0?`<span class="note-count">💬 ${d.noteCount}</span>`:`<span style="font-size:12px;color:#cbd5e1">-</span>`}</td>
+      <td>${confBadge(d.conf)}</td>
+    </tr>`;
+  }).join('');
+
+  return `<div class="filter-bar">
+    <span class="label">태그:</span>
+    <button class="tag-btn${!state.selTag?' active':''}" data-tag="">전체</button>
+    ${tagBtns}
+    <span class="filter-count">${docs.length}건</span>
+  </div>
+  <table class="doc-table"><thead><tr><th>문서명</th><th style="width:80px">유형</th><th style="width:130px">카테고리</th><th style="width:120px">문서 일자</th><th style="width:80px">크기</th><th style="width:70px">메모</th><th style="width:90px">기밀등급</th></tr></thead><tbody>${rows}</tbody></table>
+  ${docs.length===0?'<div class="empty-msg">검색 결과가 없습니다</div>':''}`;
+}
+
+function renderDetail(){
+  const d=state.selDoc;
+  const tags=getTags(d.tagIds);
+  const docNotes=notes.filter(n=>n.docId===d.id);
+  const pinned=docNotes.filter(n=>n.pinned);
+  const others=docNotes.filter(n=>!n.pinned);
+  const c=fcolor(d.ext);
+
+  const noteCards=(list,pin)=>list.map(n=>`<div class="note-card${pin?' pinned':''}">
+    <div class="note-head"><div style="display:flex;align-items:center;gap:8px">${pin?'⭐ ':''}<span class="note-title">${esc(n.title)}</span></div><span class="note-date">${fdatetime(n.date)}</span></div>
+    <div class="note-body">${esc(n.content)}</div>
+    <div class="note-author">작성자: ${esc(n.author)}</div>
+  </div>`).join('');
+
+  const noteForm=state.addingNote?`<div class="note-form">
+    <input type="text" id="noteTitle" placeholder="메모 제목">
+    <textarea id="noteContent" rows="4" placeholder="핵심 내용을 메모하세요..."></textarea>
+    <div class="actions"><button class="btn-secondary" id="cancelNote">취소</button><button class="btn-primary" id="saveNote">저장</button></div>
+  </div>`:'';
+
+  return `<div class="overlay" id="overlay"></div>
+  <div class="detail-panel">
+    <div class="detail-header">
+      <div style="display:flex;align-items:flex-start;gap:16px">
+        <button class="close-btn" id="closeDetail">✕</button>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div class="file-icon" style="width:40px;height:40px;border-radius:10px;background:${c}15;color:${c};font-size:12px">${ficon(d.ext)}</div>
+            <div><h2 style="font-size:16px;font-weight:700">${esc(d.title)}</h2><span style="font-size:12px;color:#94a3b8">${esc(d.fileName)}</span></div>
+          </div>
+          <div class="doc-tags">${tags.map(t=>`<span class="tag" style="background:${t.color}18;color:${t.color};font-size:11px;padding:2px 8px">${esc(t.name)}</span>`).join('')}</div>
+        </div>
+      </div>
+    </div>
+    <div class="detail-info">
+      <div class="info-grid">
+        <div class="info-item"><div class="il">카테고리</div><div class="iv">${catName(d.catId)}</div></div>
+        <div class="info-item"><div class="il">문서 일자</div><div class="iv">${fdate(d.date)}</div></div>
+        <div class="info-item"><div class="il">파일 크기</div><div class="iv">${fmt(d.size)}</div></div>
+        <div class="info-item"><div class="il">기밀등급</div><div class="iv">${d.conf==='confidential'?'기밀':d.conf==='internal'?'사내':'공개'}</div></div>
+        ${d.parties.length?`<div class="info-item"><div class="il">관련 당사자</div><div class="iv">${esc(d.parties.join(', '))}</div></div>`:''}
+        <div class="info-item"><div class="il">SharePoint 경로</div><div class="iv">${esc(d.spPath)}</div></div>
+      </div>
+      <button class="sp-btn">🔗 SharePoint에서 열기</button>
+    </div>
+    <div class="notes-section">
+      <div class="notes-header"><h3>메모 (${docNotes.length})</h3><button class="btn-primary" id="addNoteBtn">+ 메모 추가</button></div>
+      ${noteForm}
+      ${noteCards(pinned,true)}
+      ${noteCards(others,false)}
+      ${docNotes.length===0&&!state.addingNote?'<div style="text-align:center;padding:32px;color:#94a3b8;font-size:13px">아직 메모가 없습니다. 첫 메모를 추가해보세요.</div>':''}
+    </div>
+  </div>`;
+}
+
+function renderSettings(){
+  const tab=state.settingsTab;
+  const tabBtns=['sharepoint','users','tags'].map(t=>{
+    const labels={sharepoint:'SharePoint 연동',users:'사용자 권한',tags:'태그 관리'};
+    return `<button class="tab-btn${tab===t?' active':''}" data-stab="${t}">${labels[t]}</button>`;
+  }).join('');
+
+  let body='';
+  if(tab==='sharepoint'){
+    const folderTree=renderFolderTree();
+    body=`<div class="section"><h3>SharePoint 사이트 연결</h3>
+      <div class="form-grid">
+        <div class="form-field"><label>SharePoint 사이트 URL</label><input type="text" value="https://회사명.sharepoint.com/sites/legal" placeholder="https://회사명.sharepoint.com/sites/사이트명"></div>
+        <div class="form-field"><label>Azure AD Tenant ID</label><input type="text" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"></div>
+        <div class="form-field"><label>Client ID (앱 등록)</label><input type="text" placeholder="Azure AD에서 등록한 앱의 Client ID"></div>
+        <div class="form-field"><label>Client Secret</label><input type="password" placeholder="Azure AD 앱의 Client Secret"></div>
+      </div>
+      <div class="info-box blue"><strong>Azure AD 앱 등록 필요 권한:</strong><br>Files.Read.All, Sites.Read.All, User.Read, offline_access<br><span style="color:#64748b">* IT팀에서 Azure Portal > App registrations에서 앱을 등록하고 위 권한을 부여해야 합니다.</span></div>
+      <button class="btn-primary-lg" id="connectBtn">${state.spConnected?'재연결':'SharePoint 연결'}</button>
+      ${state.spConnected?'<div class="connected-status"><span class="sync-dot"></span>SharePoint에 정상 연결되었습니다</div>':''}
+    </div>
+    ${state.spConnected?`<div class="section"><h3>동기화 대상 폴더 선택</h3>
+      <p style="font-size:13px;color:#64748b;margin-bottom:12px">아래 SharePoint 폴더 구조에서 동기화할 루트 폴더를 선택하세요. 선택한 폴더의 하위 폴더가 자동으로 카테고리로 매핑됩니다.</p>
+      <div class="folder-tree">${folderTree}</div>
+      <div class="info-box green" style="margin-top:12px"><strong>선택된 루트 폴더:</strong> /법무<br>하위 폴더 구조가 사이드바의 카테고리 트리로 자동 반영됩니다.</div>
+    </div>
+    <div class="section"><h3>동기화 설정</h3>
+      <div class="form-grid">
+        <div class="form-field"><label>자동 동기화 간격</label><select><option>15분마다</option><option>30분마다</option><option selected>1시간마다</option><option>6시간마다</option><option>1일마다</option></select></div>
+        <div class="form-field"><label>자동 동기화</label><label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;margin-top:6px"><input type="checkbox" checked style="width:16px;height:16px;accent-color:#1e40af"> 자동 동기화 활성화</label></div>
+      </div>
+      <div style="display:flex;gap:12px;margin-top:16px"><button class="btn-primary-lg">수동 동기화 실행</button><button class="btn-secondary-lg">설정 저장</button></div>
+    </div>`:''}
+    <div class="section"><h3>동작 방식</h3>
+      <div class="step-grid">
+        <div class="step-card"><div class="step-num">1</div><div class="st">SharePoint 폴더 연결</div><div class="sd">법무 문서가 저장된 SharePoint 사이트와 루트 폴더를 지정합니다.</div></div>
+        <div class="step-card"><div class="step-num">2</div><div class="st">폴더 → 카테고리 매핑</div><div class="sd">SharePoint의 폴더 구조가 좌측 사이드바 카테고리 트리로 자동 반영됩니다.</div></div>
+        <div class="step-card"><div class="step-num">3</div><div class="st">파일 목록 동기화</div><div class="sd">각 폴더 내 파일들의 메타데이터가 문서 목록에 표시됩니다. 원본 파일은 SharePoint에 그대로 유지됩니다.</div></div>
+      </div>
+    </div>`;
+  } else if(tab==='users'){
+    body=`<div class="section"><h3>사용자 권한 관리</h3>
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">Azure AD 그룹 기반으로 접근 권한이 관리됩니다.</p>
+      <table class="user-table"><thead><tr><th>이름</th><th>이메일</th><th>부서</th><th>권한</th><th>마지막 접속</th></tr></thead><tbody>
+        <tr><td>김법무</td><td style="color:#64748b;font-size:12px">km@company.com</td><td>법무팀</td><td><span class="badge" style="background:#fee2e2;color:#dc2626">관리자</span></td><td style="color:#94a3b8;font-size:12px">2026.03.21 09:30</td></tr>
+        <tr><td>이대리</td><td style="color:#64748b;font-size:12px">lee@company.com</td><td>법무팀</td><td><span class="badge" style="background:#e0e7ff;color:#4f46e5">편집자</span></td><td style="color:#94a3b8;font-size:12px">2026.03.20 17:00</td></tr>
+        <tr><td>박변호사</td><td style="color:#64748b;font-size:12px">park@company.com</td><td>법무팀</td><td><span class="badge" style="background:#e0e7ff;color:#4f46e5">편집자</span></td><td style="color:#94a3b8;font-size:12px">2026.03.19 14:20</td></tr>
+        <tr><td>최과장</td><td style="color:#64748b;font-size:12px">choi@company.com</td><td>경영기획</td><td><span class="badge" style="background:#f1f5f9;color:#64748b">뷰어</span></td><td style="color:#94a3b8;font-size:12px">2026.03.18 10:15</td></tr>
+      </tbody></table>
+    </div>`;
+  } else {
+    body=`<div class="section"><h3>태그 관리</h3>
+      <p style="font-size:13px;color:#64748b;margin-bottom:16px">문서에 부여할 태그를 관리합니다.</p>
+      <div class="tag-list">${TAGS.map(t=>`<div class="tag-manage"><div class="dot" style="background:${t.color}"></div><span>${esc(t.name)}</span><button>×</button></div>`).join('')}</div>
+      <div class="add-tag-row"><input type="text" placeholder="새 태그 이름"><input type="color" value="#6366f1"><button class="btn-primary-lg" style="margin:0">추가</button></div>
+    </div>`;
+  }
+  return `<div class="tabs">${tabBtns}</div>${body}`;
+}
+
+function renderFolderTree(){
+  const folders=[
+    {name:'법무',depth:0,selected:true,hasKids:true},
+    {name:'2026',depth:1,hasKids:true},
+    {name:'CP사건 (공정거래)',depth:2},
+    {name:'M&A건 (DEF인수)',depth:2},
+    {name:'노동소송건',depth:2},
+    {name:'2025',depth:1,hasKids:true},
+    {name:'XYZ 특허소송',depth:2},
+    {name:'NDA/비밀유지',depth:2},
+    {name:'본사 임대차',depth:2},
+    {name:'JKL 원자재 공급건',depth:2},
+    {name:'ABC 라이선스건',depth:2},
+    {name:'2024',depth:1,hasKids:true},
+    {name:'사업자등록 갱신',depth:2},
+    {name:'내부통제 정비',depth:2},
+    {name:'이사회자료',depth:1,hasKids:true},
+    {name:'2026 이사회',depth:2},
+    {name:'2025 이사회',depth:2},
+    {name:'2024 이사회',depth:2},
+    {name:'규정',depth:1},
+  ];
+  return folders.map(f=>{
+    const pad=f.depth*20+8;
+    const sel=f.selected?'selected':'';
+    const arrow=f.hasKids?'▸':'';
+    const icon=f.selected?'📁':'📂';
+    return `<div class="folder-node ${sel}" style="padding-left:${pad}px"><span style="width:14px;font-size:10px">${arrow}</span> ${icon} ${esc(f.name)}${f.selected?'<span class="root-badge">루트</span>':''}</div>`;
+  }).join('');
+}
+
+// ============ EVENTS ============
+function bindEvents(){
+  // Nav
+  document.querySelectorAll('.nav-item[data-page]').forEach(el=>el.onclick=()=>{
+    setState({page:el.dataset.page,selCat:null,selTag:null,selDoc:null,search:'',addingNote:false});
+  });
+  // Category
+  document.querySelectorAll('.cat-item[data-cat]').forEach(el=>el.onclick=()=>{
+    const id=el.dataset.cat;
+    const toggle=el.dataset.toggle;
+    if(toggle){
+      state.expandedCats[toggle]=!state.expandedCats[toggle];
+    }
+    setState({selCat:state.selCat===id?null:id, page:state.page==='dashboard'?'documents':state.page});
+  });
+  // Search
+  const si=document.getElementById('searchInput');
+  if(si) si.oninput=()=>{
+    const q=si.value;
+    setState({search:q, page:q&&state.page==='dashboard'?'documents':state.page});
+  };
+  // Tags filter
+  document.querySelectorAll('.tag-btn[data-tag]').forEach(el=>el.onclick=()=>{
+    const t=el.dataset.tag;
+    setState({selTag:t||null});
+  });
+  // Doc rows
+  document.querySelectorAll('tr[data-doc]').forEach(el=>el.onclick=()=>{
+    const doc=DOCUMENTS.find(d=>d.id===el.dataset.doc);
+    if(doc) setState({selDoc:doc,addingNote:false});
+  });
+  // Close detail
+  const ov=document.getElementById('overlay');
+  if(ov) ov.onclick=()=>setState({selDoc:null,addingNote:false});
+  const cb=document.getElementById('closeDetail');
+  if(cb) cb.onclick=()=>setState({selDoc:null,addingNote:false});
+  // Add note
+  const anb=document.getElementById('addNoteBtn');
+  if(anb) anb.onclick=()=>setState({addingNote:!state.addingNote});
+  const cn=document.getElementById('cancelNote');
+  if(cn) cn.onclick=()=>setState({addingNote:false});
+  const sn=document.getElementById('saveNote');
+  if(sn) sn.onclick=()=>{
+    const t=document.getElementById('noteTitle').value||'메모';
+    const c=document.getElementById('noteContent').value;
+    if(!c.trim())return;
+    notes.unshift({id:'n-'+Date.now(),docId:state.selDoc.id,author:'김법무',title:t,content:c,pinned:false,date:new Date().toISOString()});
+    state.selDoc.noteCount++;
+    setState({addingNote:false});
+  };
+  // Settings tabs
+  document.querySelectorAll('.tab-btn[data-stab]').forEach(el=>el.onclick=()=>{
+    setState({settingsTab:el.dataset.stab});
+  });
+  // Connect button
+  const conBtn=document.getElementById('connectBtn');
+  if(conBtn) conBtn.onclick=()=>{
+    conBtn.textContent='연결 중...';
+    conBtn.disabled=true;
+    setTimeout(()=>setState({spConnected:true}),1000);
+  };
+}
+
+// ============ INIT ============
+render();
+</script>
+</body>
+</html>

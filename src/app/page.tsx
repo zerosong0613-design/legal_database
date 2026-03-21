@@ -6,6 +6,7 @@ import Header from "@/components/layout/Header";
 import DocumentTable from "@/components/documents/DocumentTable";
 import DocumentDetail from "@/components/documents/DocumentDetail";
 import DashboardStats from "@/components/dashboard/DashboardStats";
+import SettingsPage from "@/components/settings/SettingsPage";
 import { MOCK_DOCUMENTS, MOCK_TAGS, type Document } from "@/lib/mock-data";
 import { LABELS } from "@/constants/ko";
 
@@ -151,37 +152,8 @@ export default function Home() {
             </div>
           )}
 
-          {/* Settings placeholder */}
-          {currentPage === "settings" && (
-            <div
-              style={{
-                padding: "48px",
-                backgroundColor: "#fff",
-                borderRadius: "12px",
-                border: "1px solid #e2e8f0",
-                textAlign: "center",
-              }}
-            >
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="#cbd5e1"
-                strokeWidth="1.5"
-                style={{ marginBottom: "16px" }}
-              >
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-              <h3 style={{ margin: "0 0 8px", fontSize: "16px", fontWeight: 600, color: "#475569" }}>
-                설정
-              </h3>
-              <p style={{ margin: 0, fontSize: "13px", color: "#94a3b8" }}>
-                SharePoint 동기화 설정, 사용자 권한 관리, 태그 관리 기능이 여기에 구현될 예정입니다.
-              </p>
-            </div>
-          )}
+          {/* Settings */}
+          {currentPage === "settings" && <SettingsPage />}
         </div>
       </main>
 
