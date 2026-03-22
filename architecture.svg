@@ -1,0 +1,286 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" font-family="'Segoe UI', -apple-system, sans-serif">
+  <defs>
+    <filter id="shadow" x="-4%" y="-4%" width="108%" height="112%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.08"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-blue" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-purple" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto-start-reverse">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7c3aed"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="#f8fafc" rx="8"/>
+
+  <!-- Title -->
+  <text x="600" y="36" text-anchor="middle" font-size="18" font-weight="700" fill="#0f172a">법무 지식 아카이브 — 시스템 아키텍처</text>
+  <text x="600" y="54" text-anchor="middle" font-size="11" fill="#94a3b8">Legal Knowledge Archive System Architecture</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 1: External Services (top) -->
+  <!-- ═══════════════════════════════════════════ -->
+  <text x="40" y="88" font-size="10" font-weight="700" fill="#94a3b8" letter-spacing="0.1em">EXTERNAL SERVICES</text>
+
+  <!-- Azure AD -->
+  <rect x="40" y="100" width="220" height="100" rx="10" fill="#fff" stroke="#bfdbfe" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="40" y="100" width="220" height="28" rx="10" fill="#1e40af"/>
+  <rect x="40" y="118" width="220" height="10" fill="#1e40af"/>
+  <text x="150" y="119" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Microsoft Entra ID (Azure AD)</text>
+  <text x="60" y="148" font-size="10" fill="#475569">SSO 인증 (OAuth 2.0)</text>
+  <text x="60" y="163" font-size="10" fill="#475569">사용자/그룹 관리</text>
+  <text x="60" y="178" font-size="10" fill="#475569">Person 필드 자동 매핑</text>
+  <circle cx="230" cy="148" r="3" fill="#16a34a"/><text x="218" y="151" text-anchor="end" font-size="8" fill="#16a34a">SSO</text>
+
+  <!-- SharePoint -->
+  <rect x="300" y="100" width="340" height="100" rx="10" fill="#fff" stroke="#bfdbfe" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="300" y="100" width="340" height="28" rx="10" fill="#0369a1"/>
+  <rect x="300" y="118" width="340" height="10" fill="#0369a1"/>
+  <text x="470" y="119" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">SharePoint Online</text>
+  <text x="320" y="148" font-size="10" fill="#475569">문서 라이브러리 (파일 원본)</text>
+  <text x="320" y="163" font-size="10" fill="#475569">폴더 구조 → 카테고리 매핑</text>
+  <text x="320" y="178" font-size="10" fill="#475569">Graph API (Files.ReadWrite.All)</text>
+  <rect x="530" y="140" width="90" height="18" rx="4" fill="#dcfce7"/>
+  <text x="575" y="153" text-anchor="middle" font-size="8" font-weight="600" fill="#16a34a">파일 원본 보관</text>
+  <rect x="530" y="162" width="90" height="18" rx="4" fill="#fef3c7"/>
+  <text x="575" y="175" text-anchor="middle" font-size="8" font-weight="600" fill="#d97706">읽기/쓰기</text>
+
+  <!-- Azure OpenAI -->
+  <rect x="680" y="100" width="220" height="100" rx="10" fill="#fff" stroke="#c4b5fd" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="680" y="100" width="220" height="28" rx="10" fill="#7c3aed"/>
+  <rect x="680" y="118" width="220" height="10" fill="#7c3aed"/>
+  <text x="790" y="119" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Azure OpenAI</text>
+  <text x="700" y="148" font-size="10" fill="#475569">사건 요약 자동생성</text>
+  <text x="700" y="163" font-size="10" fill="#475569">문서 메모 AI 작성</text>
+  <text x="700" y="178" font-size="10" fill="#475569">사건별 AI 채팅</text>
+  <circle cx="870" cy="148" r="3" fill="#7c3aed"/><text x="858" y="151" text-anchor="end" font-size="8" fill="#7c3aed">GPT-4o</text>
+
+  <!-- Azure Doc Intelligence (optional) -->
+  <rect x="940" y="100" width="220" height="100" rx="10" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" stroke-dasharray="4" filter="url(#shadow)"/>
+  <rect x="940" y="100" width="220" height="28" rx="10" fill="#94a3b8"/>
+  <rect x="940" y="118" width="220" height="10" fill="#94a3b8"/>
+  <text x="1050" y="119" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">AI Document Intelligence</text>
+  <text x="960" y="148" font-size="10" fill="#94a3b8">PDF/DOCX 텍스트 추출</text>
+  <text x="960" y="163" font-size="10" fill="#94a3b8">파일 내용 분석용</text>
+  <text x="960" y="178" font-size="10" fill="#94a3b8">(향후 연동 예정)</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- Connection arrows from services -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <!-- Azure AD → App -->
+  <line x1="150" y1="200" x2="150" y2="270" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#arrow-blue)"/>
+  <text x="158" y="240" font-size="8" fill="#3b82f6">토큰/사용자정보</text>
+
+  <!-- SharePoint → App (bidirectional) -->
+  <line x1="440" y1="200" x2="440" y2="270" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <line x1="500" y1="270" x2="500" y2="200" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <text x="415" y="240" font-size="8" fill="#16a34a">동기화</text>
+  <text x="507" y="240" font-size="8" fill="#16a34a">업로드</text>
+
+  <!-- Azure OpenAI → App -->
+  <line x1="790" y1="200" x2="790" y2="270" stroke="#7c3aed" stroke-width="1.5" marker-end="url(#arrow-purple)"/>
+  <text x="798" y="240" font-size="8" fill="#7c3aed">AI 분석/채팅</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 2: Application (middle) -->
+  <!-- ═══════════════════════════════════════════ -->
+  <text x="40" y="262" font-size="10" font-weight="700" fill="#94a3b8" letter-spacing="0.1em">APPLICATION LAYER</text>
+
+  <!-- Main App Box -->
+  <rect x="40" y="272" width="1120" height="230" rx="12" fill="#fff" stroke="#1e40af" stroke-width="2" filter="url(#shadow)"/>
+  <rect x="40" y="272" width="1120" height="32" rx="12" fill="#1e40af"/>
+  <rect x="40" y="294" width="1120" height="10" fill="#1e40af"/>
+  <text x="600" y="294" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">법무 지식 아카이브 (Legal Knowledge Archive) — 단일 HTML + Vanilla JS</text>
+
+  <!-- UI Components -->
+  <rect x="60" y="318" width="240" height="170" rx="8" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="180" y="336" text-anchor="middle" font-size="10" font-weight="700" fill="#1e40af">UI 컴포넌트</text>
+  <text x="78" y="356" font-size="9" fill="#475569">● 사이드바 (폴더 트리 + 네비)</text>
+  <text x="78" y="372" font-size="9" fill="#475569">● 대시보드 (통계 + 팀활동)</text>
+  <text x="78" y="388" font-size="9" fill="#475569">● 문서 목록 (폴더 그룹핑)</text>
+  <text x="78" y="404" font-size="9" fill="#475569">● 문서 상세 패널</text>
+  <text x="78" y="420" font-size="9" fill="#475569">● 사건 요약 페이지</text>
+  <text x="78" y="436" font-size="9" fill="#475569">● 4섹션 메모 에디터</text>
+  <text x="78" y="452" font-size="9" fill="#475569">● AI 채팅 / 모달 / 토스트</text>
+  <text x="78" y="468" font-size="9" fill="#475569">● 설정 (SP/AI/사용자/카테고리/태그)</text>
+
+  <!-- State Management -->
+  <rect x="320" y="318" width="180" height="170" rx="8" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="410" y="336" text-anchor="middle" font-size="10" font-weight="700" fill="#16a34a">상태 관리</text>
+  <text x="338" y="358" font-size="9" fill="#475569">page</text>
+  <text x="338" y="374" font-size="9" fill="#475569">selCat / selDoc</text>
+  <text x="338" y="390" font-size="9" fill="#475569">search / filters</text>
+  <text x="338" y="406" font-size="9" fill="#475569">sortCol / sortDir</text>
+  <text x="338" y="422" font-size="9" fill="#475569">hideCompleted (토글)</text>
+  <text x="338" y="438" font-size="9" fill="#475569">showDocModal</text>
+  <text x="338" y="454" font-size="9" fill="#475569">showCaseInfoEdit</text>
+  <text x="338" y="470" font-size="9" fill="#475569">aiLoading / chatLoading</text>
+
+  <!-- DataAdapter -->
+  <rect x="520" y="318" width="280" height="170" rx="8" fill="#fefce8" stroke="#fde68a"/>
+  <text x="660" y="336" text-anchor="middle" font-size="10" font-weight="700" fill="#a16207">DataAdapter (DA)</text>
+  <text x="538" y="356" font-size="9" fill="#475569">getDocs() / addDoc() / updateDoc()</text>
+  <text x="538" y="372" font-size="9" fill="#475569">getCats() / addCat() / updateCat()</text>
+  <text x="538" y="388" font-size="9" fill="#475569">getTags() / addTag() / deleteTag()</text>
+  <text x="538" y="404" font-size="9" fill="#475569">getUsers() / updateUserRole()</text>
+  <text x="538" y="420" font-size="9" fill="#475569">getDocMemo() / setDocMemo()</text>
+  <text x="538" y="436" font-size="9" fill="#475569">getCaseNotes() / addCaseNote()</text>
+  <text x="538" y="452" font-size="9" fill="#475569">getAISummary() / getChatHistory()</text>
+  <rect x="540" y="462" width="242" height="16" rx="3" fill="#fef3c7"/>
+  <text x="661" y="474" text-anchor="middle" font-size="8" font-weight="600" fill="#a16207">Phase1: localStorage / Phase2: SP REST API</text>
+
+  <!-- Access Control -->
+  <rect x="820" y="318" width="320" height="170" rx="8" fill="#fdf2f8" stroke="#fbcfe8"/>
+  <text x="980" y="336" text-anchor="middle" font-size="10" font-weight="700" fill="#be185d">권한 제어</text>
+
+  <rect x="838" y="348" width="90" height="48" rx="6" fill="#fee2e2" stroke="#fecaca"/>
+  <text x="883" y="366" text-anchor="middle" font-size="9" font-weight="700" fill="#dc2626">관리자</text>
+  <text x="883" y="383" text-anchor="middle" font-size="7" fill="#64748b">설정/동기화/사건관리</text>
+
+  <rect x="938" y="348" width="90" height="48" rx="6" fill="#e0e7ff" stroke="#c7d2fe"/>
+  <text x="983" y="366" text-anchor="middle" font-size="9" font-weight="700" fill="#4f46e5">편집자</text>
+  <text x="983" y="383" text-anchor="middle" font-size="7" fill="#64748b">등록/수정/메모</text>
+
+  <rect x="1038" y="348" width="90" height="48" rx="6" fill="#f1f5f9" stroke="#e2e8f0"/>
+  <text x="1083" y="366" text-anchor="middle" font-size="9" font-weight="700" fill="#64748b">뷰어</text>
+  <text x="1083" y="383" text-anchor="middle" font-size="7" fill="#64748b">조회/검색만</text>
+
+  <text x="838" y="416" font-size="9" fill="#475569">currentUser() → CURRENT_USER_ID</text>
+  <text x="838" y="432" font-size="9" fill="#475569">isAdmin() / canEdit()</text>
+  <text x="838" y="448" font-size="9" fill="#475569">userName(userId) → 이름 조회</text>
+  <text x="838" y="464" font-size="9" fill="#475569">SP: Azure AD 그룹 매핑</text>
+  <text x="838" y="480" font-size="9" fill="#475569">SP: Person 필드 자동 연동</text>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 3: Storage (bottom) -->
+  <!-- ═══════════════════════════════════════════ -->
+  <text x="40" y="530" font-size="10" font-weight="700" fill="#94a3b8" letter-spacing="0.1em">DATA STORAGE LAYER</text>
+
+  <!-- Phase 1: localStorage -->
+  <rect x="40" y="542" width="360" height="170" rx="10" fill="#fff" stroke="#e2e8f0" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="40" y="542" width="360" height="28" rx="10" fill="#64748b"/>
+  <rect x="40" y="560" width="360" height="10" fill="#64748b"/>
+  <text x="220" y="562" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Phase 1: localStorage (데모)</text>
+
+  <text x="60" y="588" font-size="9" font-weight="600" fill="#475569">lka_docs_v4</text>
+  <text x="200" y="588" font-size="9" fill="#94a3b8">문서 메타데이터</text>
+  <text x="60" y="604" font-size="9" font-weight="600" fill="#475569">lka_cats_v4</text>
+  <text x="200" y="604" font-size="9" fill="#94a3b8">카테고리 + 사건 정보</text>
+  <text x="60" y="620" font-size="9" font-weight="600" fill="#475569">lka_tags_v4</text>
+  <text x="200" y="620" font-size="9" fill="#94a3b8">태그 마스터</text>
+  <text x="60" y="636" font-size="9" font-weight="600" fill="#475569">lka_users_v4</text>
+  <text x="200" y="636" font-size="9" fill="#94a3b8">사용자 + 권한</text>
+  <text x="60" y="652" font-size="9" font-weight="600" fill="#475569">lka_memos_v4</text>
+  <text x="200" y="652" font-size="9" fill="#94a3b8">4섹션 문서 메모</text>
+  <text x="60" y="668" font-size="9" font-weight="600" fill="#475569">lka_cnotes_v4</text>
+  <text x="200" y="668" font-size="9" fill="#94a3b8">사건 메모</text>
+  <text x="60" y="684" font-size="9" font-weight="600" fill="#475569">lka_az_config</text>
+  <text x="200" y="684" font-size="9" fill="#94a3b8">AI 설정 / 요약 캐시 / 채팅</text>
+
+  <rect x="58" y="694" width="326" height="14" rx="3" fill="#fef2f2"/>
+  <text x="221" y="704" text-anchor="middle" font-size="7" font-weight="500" fill="#dc2626">브라우저 한정 · 캐시 삭제 시 소실 · 공유 불가</text>
+
+  <!-- Arrow: Phase 1 → Phase 2 -->
+  <line x1="400" y1="627" x2="460" y2="627" stroke="#64748b" stroke-width="2" stroke-dasharray="6" marker-end="url(#arrow)"/>
+  <text x="430" y="620" text-anchor="middle" font-size="8" font-weight="600" fill="#64748b">전환</text>
+
+  <!-- Phase 2: SharePoint Lists -->
+  <rect x="460" y="542" width="420" height="170" rx="10" fill="#fff" stroke="#16a34a" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="460" y="542" width="420" height="28" rx="10" fill="#16a34a"/>
+  <rect x="460" y="560" width="420" height="10" fill="#16a34a"/>
+  <text x="670" y="562" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">Phase 2: SharePoint Lists (운영)</text>
+
+  <rect x="478" y="580" width="160" height="18" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="558" y="593" text-anchor="middle" font-size="8" font-weight="600" fill="#16a34a">LKA_DocMeta</text>
+  <text x="648" y="593" font-size="8" fill="#64748b">문서 메타 (Owner=Person)</text>
+
+  <rect x="478" y="602" width="160" height="18" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="558" y="615" text-anchor="middle" font-size="8" font-weight="600" fill="#16a34a">LKA_DocMemos</text>
+  <text x="648" y="615" font-size="8" fill="#64748b">4섹션 메모 (ModifiedBy=Person)</text>
+
+  <rect x="478" y="624" width="160" height="18" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="558" y="637" text-anchor="middle" font-size="8" font-weight="600" fill="#16a34a">LKA_CaseNotes</text>
+  <text x="648" y="637" font-size="8" fill="#64748b">사건 메모 (Author=Person)</text>
+
+  <rect x="478" y="646" width="160" height="18" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="558" y="659" text-anchor="middle" font-size="8" font-weight="600" fill="#16a34a">LKA_Categories</text>
+  <text x="648" y="659" font-size="8" fill="#64748b">카테고리 + 사건정보 + 폴더매핑</text>
+
+  <rect x="478" y="668" width="160" height="18" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="558" y="681" text-anchor="middle" font-size="8" font-weight="600" fill="#16a34a">LKA_Tags</text>
+  <text x="648" y="681" font-size="8" fill="#64748b">태그 마스터</text>
+
+  <rect x="478" y="690" width="160" height="18" rx="4" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="558" y="703" text-anchor="middle" font-size="8" font-weight="600" fill="#16a34a">LKA_Users</text>
+  <text x="648" y="703" font-size="8" fill="#64748b">사용자 권한 (AzureAD 연동)</text>
+
+  <!-- SP Document Library -->
+  <rect x="920" y="542" width="240" height="170" rx="10" fill="#fff" stroke="#0369a1" stroke-width="1.5" filter="url(#shadow)"/>
+  <rect x="920" y="542" width="240" height="28" rx="10" fill="#0369a1"/>
+  <rect x="920" y="560" width="240" height="10" fill="#0369a1"/>
+  <text x="1040" y="562" text-anchor="middle" font-size="11" font-weight="600" fill="#fff">SP 문서 라이브러리</text>
+
+  <text x="940" y="590" font-size="9" fill="#475569">/법무</text>
+  <text x="956" y="606" font-size="9" fill="#475569">├ /2026</text>
+  <text x="972" y="622" font-size="9" fill="#475569">│ ├ /CP사건</text>
+  <text x="972" y="638" font-size="9" fill="#475569">│ ├ /M&amp;A건</text>
+  <text x="972" y="654" font-size="9" fill="#475569">│ └ /노동소송</text>
+  <text x="956" y="670" font-size="9" fill="#475569">├ /2025</text>
+  <text x="956" y="686" font-size="9" fill="#475569">├ /이사회자료</text>
+  <text x="956" y="702" font-size="9" fill="#475569">└ /규정</text>
+
+  <rect x="1080" y="586" width="64" height="16" rx="3" fill="#fef3c7"/>
+  <text x="1112" y="597" text-anchor="middle" font-size="7" font-weight="600" fill="#a16207">파일 원본</text>
+  <rect x="1080" y="606" width="64" height="16" rx="3" fill="#dcfce7"/>
+  <text x="1112" y="617" text-anchor="middle" font-size="7" font-weight="600" fill="#16a34a">삭제 불가</text>
+
+  <!-- DA → Storage arrows -->
+  <line x1="660" y1="502" x2="220" y2="542" stroke="#64748b" stroke-width="1" stroke-dasharray="4" marker-end="url(#arrow)"/>
+  <line x1="660" y1="502" x2="670" y2="542" stroke="#16a34a" stroke-width="1.5" marker-end="url(#arrow-green)"/>
+  <line x1="660" y1="502" x2="1040" y2="542" stroke="#0369a1" stroke-width="1" stroke-dasharray="4"/>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!-- LAYER 4: Data Flow Legend (bottom) -->
+  <!-- ═══════════════════════════════════════════ -->
+
+  <rect x="40" y="740" width="1120" height="145" rx="10" fill="#fff" stroke="#e2e8f0" filter="url(#shadow)"/>
+  <text x="60" y="764" font-size="11" font-weight="700" fill="#1e293b">데이터 흐름 (CRUD)</text>
+
+  <!-- Create flows -->
+  <rect x="60" y="778" width="520" height="96" rx="6" fill="#f8fafc"/>
+  <text x="78" y="796" font-size="10" font-weight="600" fill="#16a34a">생성 (Create)</text>
+
+  <text x="78" y="814" font-size="8" fill="#475569">문서 등록</text>
+  <text x="168" y="814" font-size="8" fill="#94a3b8">→ 모달 입력 → DA.addDoc() → SP 파일 업로드 + LKA_DocMeta</text>
+  <text x="78" y="828" font-size="8" fill="#475569">사건/폴더 추가</text>
+  <text x="168" y="828" font-size="8" fill="#94a3b8">→ 설정 입력 → DA.addCat() → SP 폴더 생성 + LKA_Categories</text>
+  <text x="78" y="842" font-size="8" fill="#475569">메모 작성</text>
+  <text x="168" y="842" font-size="8" fill="#94a3b8">→ 상세패널 → DA.setDocMemo() → LKA_DocMemos</text>
+  <text x="78" y="856" font-size="8" fill="#475569">사건 메모 추가</text>
+  <text x="168" y="856" font-size="8" fill="#94a3b8">→ 사건페이지 → DA.addCaseNote() → LKA_CaseNotes</text>
+  <text x="78" y="870" font-size="8" fill="#475569">AI 메모/요약</text>
+  <text x="168" y="870" font-size="8" fill="#94a3b8">→ Azure OpenAI → DA.setDocMemo() / DA.setAISummary()</text>
+
+  <!-- Read/Update/Sync flows -->
+  <rect x="600" y="778" width="540" height="96" rx="6" fill="#f8fafc"/>
+  <text x="618" y="796" font-size="10" font-weight="600" fill="#3b82f6">조회/수정/동기화</text>
+
+  <text x="618" y="814" font-size="8" fill="#475569">SP 동기화</text>
+  <text x="708" y="814" font-size="8" fill="#94a3b8">→ Graph API delta → 변경분 반영 → DA.updateDoc()</text>
+  <text x="618" y="828" font-size="8" fill="#475569">문서 수정</text>
+  <text x="708" y="828" font-size="8" fill="#94a3b8">→ 수정모달 → DA.updateDoc() → LKA_DocMeta (SP 원본 미변경)</text>
+  <text x="618" y="842" font-size="8" fill="#475569">사건정보 수정</text>
+  <text x="708" y="842" font-size="8" fill="#94a3b8">→ 사건정보모달 → DA.updateCat() → LKA_Categories</text>
+  <text x="618" y="856" font-size="8" fill="#475569">권한 변경</text>
+  <text x="708" y="856" font-size="8" fill="#94a3b8">→ 설정 드롭다운 → DA.updateUserRole() → LKA_Users</text>
+  <text x="618" y="870" font-size="8" fill="#dc2626" font-weight="600">삭제 불가</text>
+  <text x="708" y="870" font-size="8" fill="#94a3b8">→ 문서/폴더는 SharePoint에서만 삭제 (원본 보호)</text>
+</svg>
