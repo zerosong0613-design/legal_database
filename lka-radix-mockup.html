@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LKA — Radix UI Themes</title>
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Radix UI Themes 토큰 시스템 그대로 반영 ── */
+*{margin:0;padding:0;box-sizing:border-box;}
+:root {
+  /* Radix Gray scale */
+  --gray-1: #fcfcfc;
+  --gray-2: #f9f9f9;
+  --gray-3: #f0f0f0;
+  --gray-4: #e8e8e8;
+  --gray-5: #e0e0e0;
+  --gray-6: #d8d8d8;
+  --gray-7: #cecece;
+  --gray-8: #bbbbbb;
+  --gray-9: #8d8d8d;
+  --gray-10:#838383;
+  --gray-11:#646464;
+  --gray-12:#202020;
+
+  /* Radix Blue scale (accent) */
+  --blue-1: #fbfdff;
+  --blue-2: #f4faff;
+  --blue-3: #e6f4fe;
+  --blue-4: #d5efff;
+  --blue-5: #c2e5ff;
+  --blue-6: #acd8fc;
+  --blue-7: #8ec8f6;
+  --blue-8: #5eb1ef;
+  --blue-9: #0090ff;
+  --blue-10:#0588f0;
+  --blue-11:#0d74ce;
+  --blue-12:#113264;
+
+  /* Radix Green */
+  --green-3: #e9f9ee;
+  --green-9: #30a46c;
+  --green-11:#18794e;
+
+  /* Radix Red */
+  --red-3: #ffe0e0;  
+  --red-9: #e5484d;
+  --red-11:#c62a2f;
+
+  /* Radix Amber */
+  --amber-3: #fef0cd;
+  --amber-9: #ffc53d;
+  --amber-11:#915930;
+
+  /* Radix Violet */
+  --violet-3: #ede9fe;
+  --violet-9: #6e56cf;
+  --violet-11:#5746af;
+
+  /* Radix Orange */
+  --orange-3: #ffe8d7;
+  --orange-9: #f76b15;
+  --orange-11:#bd4b00;
+
+  --font: 'Pretendard', -apple-system, sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+
+  /* Radix radius tokens */
+  --radius-1: 3px;
+  --radius-2: 4px;
+  --radius-3: 6px;
+  --radius-4: 8px;
+  --radius-5: 12px;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--gray-2);
+  color: var(--gray-12);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ════════════════════════════
+   TOP NAV  (Radix NavigationMenu)
+════════════════════════════ */
+.topnav {
+  height: 48px;
+  background: var(--gray-1);
+  border-bottom: 1px solid var(--gray-5);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.logo {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gray-12);
+  letter-spacing: -.02em;
+  margin-right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.logo-icon {
+  width: 24px; height: 24px;
+  background: var(--blue-9);
+  border-radius: var(--radius-3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #fff; font-weight: 700;
+}
+
+/* Radix NavigationMenu.Item */
+.nav-item {
+  padding: 0 10px;
+  height: 32px;
+  display: flex; align-items: center;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--gray-11);
+  border-radius: var(--radius-3);
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  white-space: nowrap;
+}
+.nav-item:hover { background: var(--gray-3); color: var(--gray-12); }
+.nav-item.on { background: var(--gray-3); color: var(--gray-12); }
+
+.nav-sep { width: 1px; height: 18px; background: var(--gray-5); margin: 0 4px; }
+.topnav-right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+
+/* Radix Badge */
+.sync-badge {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--green-3);
+  color: var(--green-11);
+  border-radius: var(--radius-2);
+  padding: 3px 8px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green-9); }
+
+/* Radix Avatar */
+.avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--blue-9);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: #fff;
+  cursor: pointer;
+}
+
+/* ════════════════════════════
+   LAYOUT
+════════════════════════════ */
+.layout { display: flex; flex: 1; overflow: hidden; }
+
+/* ════════════════════════════
+   SIDEBAR  (Radix ScrollArea)
+════════════════════════════ */
+.sidebar {
+  width: 208px;
+  flex-shrink: 0;
+  background: var(--gray-1);
+  border-right: 1px solid var(--gray-5);
+  overflow-y: auto;
+  padding: 10px 8px;
+}
+
+/* Radix Text size="1" weight="medium" */
+.sidebar-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-9);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  padding: 8px 8px 4px;
+  margin-top: 8px;
+}
+.sidebar-label:first-child { margin-top: 0; }
+
+/* Radix ContextMenu trigger style */
+.s-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: var(--radius-3);
+  font-size: 13.5px;
+  color: var(--gray-11);
+  cursor: pointer;
+  transition: background .1s;
+}
+.s-item:hover { background: var(--gray-3); color: var(--gray-12); }
+.s-item.on {
+  background: var(--blue-3);
+  color: var(--blue-11);
+  font-weight: 600;
+}
+.s-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gray-8);
+  background: var(--gray-3);
+  padding: 1px 6px;
+  border-radius: var(--radius-2);
+}
+.s-item.on .s-count {
+  background: var(--blue-4);
+  color: var(--blue-11);
+}
+.s-item-icon { font-size: 14px; margin-right: 6px; }
+
+/* ════════════════════════════
+   MAIN
+════════════════════════════ */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+/* ── Filter bar ── */
+.filter-bar {
+  background: var(--gray-1);
+  border-bottom: 1px solid var(--gray-5);
+  padding: 10px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.fb-row1 { display: flex; gap: 8px; align-items: center; }
+
+/* Radix TextField */
+.rt-field {
+  display: flex; align-items: center; gap: 8px;
+  flex: 1;
+  background: var(--gray-1);
+  border: 1px solid var(--gray-7);
+  border-radius: var(--radius-3);
+  padding: 0 12px;
+  height: 34px;
+  transition: border-color .15s, box-shadow .15s;
+}
+.rt-field:focus-within {
+  border-color: var(--blue-8);
+  box-shadow: 0 0 0 1px var(--blue-8);
+}
+.rt-field input {
+  flex: 1; border: none; background: transparent;
+  font-family: var(--font); font-size: 13.5px;
+  color: var(--gray-12); outline: none;
+}
+.rt-field input::placeholder { color: var(--gray-9); }
+.field-icon { color: var(--gray-9); font-size: 13px; }
+.kbd {
+  font-family: var(--mono); font-size: 10px;
+  color: var(--gray-9);
+  background: var(--gray-3);
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-2);
+  padding: 2px 5px;
+}
+
+/* Radix Button */
+.rt-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  height: 34px; padding: 0 14px;
+  border-radius: var(--radius-3);
+  font-family: var(--font);
+  font-size: 13.5px; font-weight: 500;
+  cursor: pointer; border: none;
+  transition: background .12s;
+  white-space: nowrap;
+}
+.rt-btn.soft {
+  background: var(--gray-3);
+  color: var(--gray-12);
+}
+.rt-btn.soft:hover { background: var(--gray-4); }
+.rt-btn.solid {
+  background: var(--blue-9);
+  color: #fff;
+}
+.rt-btn.solid:hover { background: var(--blue-10); }
+.rt-btn.ghost {
+  background: transparent;
+  color: var(--gray-11);
+}
+.rt-btn.ghost:hover { background: var(--gray-3); color: var(--gray-12); }
+
+.fb-row2 { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+
+/* Radix Select */
+.rt-select {
+  display: flex; align-items: center; gap: 5px;
+  background: var(--gray-1);
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-3);
+  padding: 4px 10px;
+  font-family: var(--font);
+  font-size: 12.5px; font-weight: 500;
+  color: var(--gray-12);
+  cursor: pointer; white-space: nowrap;
+  transition: background .1s, border-color .1s;
+}
+.rt-select:hover { background: var(--gray-2); border-color: var(--gray-7); }
+.rt-select .arr { color: var(--gray-9); font-size: 9px; margin-left: 2px; }
+
+/* Radix ToggleGroup */
+.toggle-group { display: flex; background: var(--gray-3); border-radius: var(--radius-3); padding: 2px; gap: 2px; }
+.tg-item {
+  padding: 3px 11px;
+  border-radius: var(--radius-2);
+  font-size: 12px; font-weight: 500;
+  color: var(--gray-10);
+  cursor: pointer; transition: .12s;
+}
+.tg-item.on { background: var(--gray-1); color: var(--gray-12); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+
+.vsep { width: 1px; height: 18px; background: var(--gray-5); }
+
+/* Radix Switch */
+.rt-switch-wrap { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--gray-11); }
+.rt-switch { width: 32px; height: 17px; background: var(--blue-9); border-radius: 999px; position: relative; cursor: pointer; flex-shrink: 0; }
+.rt-switch::after { content: ''; position: absolute; right: 1.5px; top: 1.5px; width: 14px; height: 14px; border-radius: 50%; background: #fff; }
+
+/* ── Result bar ── */
+.result-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 16px;
+  background: var(--gray-2);
+  border-bottom: 1px solid var(--gray-4);
+  flex-shrink: 0;
+}
+.result-text { font-family: var(--mono); font-size: 12px; color: var(--gray-10); }
+.result-text strong { color: var(--blue-11); font-weight: 500; }
+.rb-right { display: flex; gap: 8px; align-items: center; }
+
+/* Radix SegmentedControl (view toggle) */
+.seg-ctrl { display: flex; background: var(--gray-4); border-radius: var(--radius-3); padding: 2px; gap: 2px; }
+.sc-btn { width: 28px; height: 24px; border-radius: var(--radius-2); display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; color: var(--gray-10); }
+.sc-btn.on { background: var(--gray-1); color: var(--gray-12); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+/* Radix Select small */
+.sort-select {
+  background: var(--gray-1);
+  border: 1px solid var(--gray-6);
+  border-radius: var(--radius-3);
+  padding: 4px 9px;
+  font-family: var(--font);
+  font-size: 12.5px; color: var(--gray-11);
+  cursor: pointer;
+}
+
+/* ════════════════════════════
+   TABLE  (Radix Table)
+════════════════════════════ */
+.table-wrap { flex: 1; overflow: auto; }
+
+/* Radix Table root */
+.rt-table { width: 100%; border-collapse: collapse; }
+
+/* Radix Table.Header */
+.rt-table thead th {
+  padding: 9px 12px;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 11px; font-weight: 500;
+  letter-spacing: .05em; text-transform: uppercase;
+  color: var(--gray-9);
+  background: var(--gray-2);
+  border-bottom: 1px solid var(--gray-5);
+  position: sticky; top: 0; z-index: 2;
+  cursor: pointer; user-select: none;
+  white-space: nowrap;
+}
+.rt-table thead th:hover { color: var(--gray-12); }
+.rt-table thead th.sorted { color: var(--blue-11); }
+.sort-icon { margin-left: 3px; opacity: .5; }
+.sorted .sort-icon { opacity: 1; }
+
+/* Radix Table.Row */
+.rt-table tbody tr {
+  border-bottom: 1px solid var(--gray-4);
+  cursor: pointer;
+  transition: background .08s;
+}
+.rt-table tbody tr:hover { background: var(--gray-2); }
+.rt-table tbody tr.highlight { background: var(--blue-2); }
+.rt-table tbody tr.highlight:hover { background: var(--blue-3); }
+
+/* Radix Table.Cell */
+.rt-table td {
+  padding: 10px 12px;
+  font-size: 13.5px;
+  color: var(--gray-11);
+  vertical-align: middle;
+}
+.td-doc { color: var(--gray-12); font-weight: 500; }
+.td-sub {
+  display: block;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--gray-9);
+  font-weight: 400;
+  margin-top: 2px;
+}
+.td-mono { font-family: var(--mono); font-size: 12px; }
+
+/* Radix Badge component */
+.rt-badge {
+  display: inline-flex; align-items: center;
+  padding: 1px 7px;
+  border-radius: var(--radius-2);
+  font-size: 11.5px; font-weight: 500;
+  white-space: nowrap;
+}
+/* variant=soft (Radix default) */
+.rb-blue   { background: var(--blue-3);   color: var(--blue-11); }
+.rb-green  { background: var(--green-3);  color: var(--green-11); }
+.rb-red    { background: var(--red-3);    color: var(--red-11); }
+.rb-amber  { background: var(--amber-3);  color: var(--amber-11); }
+.rb-violet { background: var(--violet-3); color: var(--violet-11); }
+.rb-orange { background: var(--orange-3); color: var(--orange-11); }
+.rb-gray   { background: var(--gray-3);   color: var(--gray-10); }
+
+/* Status indicator */
+.status-wrap { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; }
+.status-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.dot-완료 { background: var(--green-9); }
+.dot-중   { background: var(--amber-9); }
+.dot-갱신 { background: var(--red-9); }
+.dot-전   { background: var(--gray-7); }
+
+/* Radix Checkbox */
+.rt-checkbox { accent-color: var(--blue-9); width: 14px; height: 14px; cursor: pointer; }
+
+/* Star */
+.star { font-size: 14px; cursor: pointer; }
+.star.on { color: var(--amber-9); }
+.star.off { color: var(--gray-6); }
+.star.off:hover { color: var(--amber-9); }
+
+/* ════════════════════════════
+   PAGINATION  (Radix Pagination)
+════════════════════════════ */
+.pagination {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px;
+  background: var(--gray-1);
+  border-top: 1px solid var(--gray-5);
+  flex-shrink: 0;
+}
+.pg-info { font-family: var(--mono); font-size: 12px; color: var(--gray-9); }
+.pg-btns { display: flex; gap: 3px; }
+.pg-btn {
+  min-width: 30px; height: 30px; padding: 0 8px;
+  border-radius: var(--radius-3);
+  background: transparent;
+  border: 1px solid transparent;
+  font-family: var(--mono); font-size: 12.5px;
+  color: var(--gray-11);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: .1s;
+}
+.pg-btn:hover:not(.on) { background: var(--gray-3); }
+.pg-btn.on { background: var(--blue-9); color: #fff; font-weight: 600; }
+.pg-size { display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: var(--gray-10); }
+.pg-size select { background: var(--gray-1); border: 1px solid var(--gray-6); border-radius: var(--radius-3); padding: 5px 9px; font-family: var(--font); font-size: 12.5px; color: var(--gray-11); cursor: pointer; }
+
+/* ── Design label ── */
+.design-label {
+  position: fixed; top: 10px; right: 10px;
+  background: var(--blue-9); color: #fff;
+  font-family: var(--mono); font-size: 11px;
+  padding: 5px 12px; border-radius: var(--radius-3);
+  letter-spacing: .05em; z-index: 100;
+}
+</style>
+</head>
+<body>
+<div class="design-label">Radix UI Themes</div>
+
+<!-- ── Top Nav ── -->
+<nav class="topnav">
+  <div class="logo">
+    <div class="logo-icon">법</div>
+    LegalArchive
+  </div>
+
+  <div class="nav-item">대시보드</div>
+  <div class="nav-item on">문서 목록</div>
+  <div class="nav-item">폴더 탐색</div>
+  <div class="nav-item">AI 요약</div>
+  <div class="nav-sep"></div>
+  <div class="nav-item">설정</div>
+
+  <div class="topnav-right">
+    <div class="sync-badge"><div class="sync-dot"></div>동기화됨</div>
+    <div class="rt-btn ghost" style="height:30px;padding:0 10px;font-size:13px;">🔔</div>
+    <div class="avatar">권</div>
+  </div>
+</nav>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-label">업무분류</div>
+    <div class="s-item on">
+      <span><span class="s-item-icon">📁</span>전체</span>
+      <span class="s-count">512</span>
+    </div>
+    <div class="s-item">
+      <span>소송·중재</span>
+      <span class="s-count">142</span>
+    </div>
+    <div class="s-item">
+      <span>M&amp;A·거래</span>
+      <span class="s-count">89</span>
+    </div>
+    <div class="s-item">
+      <span>계약</span>
+      <span class="s-count">203</span>
+    </div>
+    <div class="s-item">
+      <span>공정거래</span>
+      <span class="s-count">34</span>
+    </div>
+    <div class="s-item">
+      <span>의약품·IP</span>
+      <span class="s-count">28</span>
+    </div>
+    <div class="s-item">
+      <span>가이드라인</span>
+      <span class="s-count">16</span>
+    </div>
+    <div class="s-item">
+      <span>교육자료</span>
+      <span class="s-count">11</span>
+    </div>
+
+    <div class="sidebar-label">상태</div>
+    <div class="s-item">
+      <span><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--green-9);margin-right:7px;vertical-align:middle;"></span>검토완료</span>
+      <span class="s-count">398</span>
+    </div>
+    <div class="s-item">
+      <span><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber-9);margin-right:7px;vertical-align:middle;"></span>검토중</span>
+      <span class="s-count">67</span>
+    </div>
+    <div class="s-item">
+      <span><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red-9);margin-right:7px;vertical-align:middle;"></span>갱신필요</span>
+      <span class="s-count">31</span>
+    </div>
+    <div class="s-item">
+      <span><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gray-7);margin-right:7px;vertical-align:middle;"></span>검토전</span>
+      <span class="s-count">16</span>
+    </div>
+
+    <div class="sidebar-label">빠른 필터</div>
+    <div class="s-item">
+      <span>⭐ 중요 문서</span>
+      <span class="s-count">47</span>
+    </div>
+    <div class="s-item">
+      <span>🔴 긴급</span>
+      <span class="s-count">12</span>
+    </div>
+    <div class="s-item">
+      <span>⏳ 만료 예정</span>
+      <span class="s-count">8</span>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="main">
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <div class="fb-row1">
+        <div class="rt-field">
+          <span class="field-icon">🔍</span>
+          <input placeholder="문서명, 키워드, 태그 검색...">
+          <span class="kbd">Ctrl K</span>
+        </div>
+        <div class="rt-btn soft">필터 ▾</div>
+        <div class="rt-btn soft">컬럼 ▾</div>
+        <div class="rt-btn soft">내보내기</div>
+        <div class="rt-btn solid">+ 문서 등록</div>
+      </div>
+
+      <div class="fb-row2">
+        <div class="rt-select">문서유형 <span class="arr">▾</span></div>
+        <div class="rt-select">담당자 <span class="arr">▾</span></div>
+        <div class="rt-select">기간 <span class="arr">▾</span></div>
+        <div class="rt-select">중요도 <span class="arr">▾</span></div>
+        <div class="vsep"></div>
+
+        <div class="toggle-group">
+          <div class="tg-item on">전체</div>
+          <div class="tg-item">긴급</div>
+          <div class="tg-item">검토완료</div>
+          <div class="tg-item">검토중</div>
+          <div class="tg-item">갱신필요</div>
+          <div class="tg-item">만료예정</div>
+        </div>
+
+        <div class="vsep"></div>
+        <div class="rt-switch-wrap">
+          <div class="rt-switch"></div>
+          유효건만
+        </div>
+      </div>
+    </div>
+
+    <!-- Result bar -->
+    <div class="result-bar">
+      <div class="result-text">총 <strong>512</strong>건 &nbsp;·&nbsp; 1–50 표시 중</div>
+      <div class="rb-right">
+        <div class="sort-select">
+          <select style="border:none;background:transparent;font-family:var(--font);font-size:12.5px;color:var(--gray-11);cursor:pointer;outline:none;">
+            <option>최신순</option>
+            <option>문서명순</option>
+            <option>상태순</option>
+          </select>
+        </div>
+        <div class="seg-ctrl">
+          <div class="sc-btn on">☰</div>
+          <div class="sc-btn">▦</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table class="rt-table">
+        <thead>
+          <tr>
+            <th style="width:36px"><input class="rt-checkbox" type="checkbox"></th>
+            <th style="min-width:300px">문서명 <span class="sort-icon">↕</span></th>
+            <th style="width:110px">업무분류</th>
+            <th style="width:88px">담당자</th>
+            <th style="width:108px" class="sorted">일자 <span class="sort-icon">↓</span></th>
+            <th style="width:100px">상태</th>
+            <th style="width:88px">중요도</th>
+            <th style="width:38px">★</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="highlight">
+            <td><input class="rt-checkbox" type="checkbox" checked></td>
+            <td>
+              <span class="td-doc">DEF Corp 기업결합 신고서</span>
+              <span class="td-sub">DEF Corp 인수건 · 공정거래위원회 제출용</span>
+            </td>
+            <td><span class="rt-badge rb-red">공정거래</span></td>
+            <td class="td-mono" style="font-size:13px">김법무</td>
+            <td class="td-mono">2026.03.19</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td><span class="rt-badge rb-red">긴급</span></td>
+            <td><span class="star on">★</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">M&amp;A건 (DEF인수) — SPA 검토 포인트</span>
+              <span class="td-sub">M&A·거래 · 내부 검토 메모</span>
+            </td>
+            <td><span class="rt-badge rb-amber">M&amp;A·거래</span></td>
+            <td class="td-mono" style="font-size:13px">박변호사</td>
+            <td class="td-mono">2026.03.12</td>
+            <td><span class="status-wrap"><span class="status-dot dot-중"></span>검토중</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">DEF Corp SPA (주식매매계약서) 초안</span>
+              <span class="td-sub">M&A·거래 · 외부 법무법인 검토본</span>
+            </td>
+            <td><span class="rt-badge rb-amber">M&amp;A·거래</span></td>
+            <td class="td-mono" style="font-size:13px">권희성</td>
+            <td class="td-mono">2026.03.11</td>
+            <td><span class="status-wrap"><span class="status-dot dot-중"></span>검토중</span></td>
+            <td>—</td>
+            <td><span class="star on">★</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">제42기 정기이사회 안건 (DEF 인수 승인)</span>
+              <span class="td-sub">소송·중재 · 이사회 의사록</span>
+            </td>
+            <td><span class="rt-badge rb-blue">소송·중재</span></td>
+            <td class="td-mono" style="font-size:13px">시스템</td>
+            <td class="td-mono">2026.03.06</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">외부 법무법인 의견서 (과징금 감경)</span>
+              <span class="td-sub">공정거래 · 법무법인 의견서</span>
+            </td>
+            <td><span class="rt-badge rb-red">공정거래</span></td>
+            <td class="td-mono" style="font-size:13px">시스템</td>
+            <td class="td-mono">2026.03.01</td>
+            <td><span class="status-wrap"><span class="status-dot dot-갱신"></span>갱신필요</span></td>
+            <td><span class="rt-badge rb-orange">만료예정</span></td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">M&amp;A건 (DEF인수) — 실사 주요 리스크</span>
+              <span class="td-sub">M&A·거래 · 실사 보고서</span>
+            </td>
+            <td><span class="rt-badge rb-amber">M&amp;A·거래</span></td>
+            <td class="td-mono" style="font-size:13px">김법무</td>
+            <td class="td-mono">2026.02.18</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td>—</td>
+            <td><span class="star on">★</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">DEF Corp 실사보고서 (법률)</span>
+              <span class="td-sub">M&A·거래 · 실사 보고서</span>
+            </td>
+            <td><span class="rt-badge rb-amber">M&amp;A·거래</span></td>
+            <td class="td-mono" style="font-size:13px">시스템</td>
+            <td class="td-mono">2026.02.16</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">부당해고 구제신청서 (홍OO)</span>
+              <span class="td-sub">소송·중재 · 노동위원회 제출용</span>
+            </td>
+            <td><span class="rt-badge rb-blue">소송·중재</span></td>
+            <td class="td-mono" style="font-size:13px">시스템</td>
+            <td class="td-mono">2026.02.06</td>
+            <td><span class="status-wrap"><span class="status-dot dot-전"></span>검토전</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">개인정보 처리방침 개정 가이드라인</span>
+              <span class="td-sub">가이드라인 · 내부 배포용</span>
+            </td>
+            <td><span class="rt-badge rb-violet">가이드라인</span></td>
+            <td class="td-mono" style="font-size:13px">박변호사</td>
+            <td class="td-mono">2026.01.28</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">하도급법 위반 이의신청서</span>
+              <span class="td-sub">공정거래 · 공정위 제출</span>
+            </td>
+            <td><span class="rt-badge rb-red">공정거래</span></td>
+            <td class="td-mono" style="font-size:13px">권희성</td>
+            <td class="td-mono">2026.01.15</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">주요 계약서 표준 NDA 양식</span>
+              <span class="td-sub">계약 · 표준 양식</span>
+            </td>
+            <td><span class="rt-badge rb-green">계약</span></td>
+            <td class="td-mono" style="font-size:13px">김법무</td>
+            <td class="td-mono">2025.12.20</td>
+            <td><span class="status-wrap"><span class="status-dot dot-갱신"></span>갱신필요</span></td>
+            <td><span class="rt-badge rb-orange">만료예정</span></td>
+            <td><span class="star on">★</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">공급업체 기본 거래계약서 (2025)</span>
+              <span class="td-sub">계약 · 표준 계약서</span>
+            </td>
+            <td><span class="rt-badge rb-green">계약</span></td>
+            <td class="td-mono" style="font-size:13px">권희성</td>
+            <td class="td-mono">2025.11.30</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">손해배상 청구소장 (ABC주식회사)</span>
+              <span class="td-sub">소송·중재 · 서울중앙지법 제출</span>
+            </td>
+            <td><span class="rt-badge rb-blue">소송·중재</span></td>
+            <td class="td-mono" style="font-size:13px">권희성</td>
+            <td class="td-mono">2025.10.22</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+          <tr>
+            <td><input class="rt-checkbox" type="checkbox"></td>
+            <td>
+              <span class="td-doc">약사법 관련 임상시험 계약서 검토</span>
+              <span class="td-sub">의약품·IP · 외부 검토 의견</span>
+            </td>
+            <td><span class="rt-badge rb-violet">의약품·IP</span></td>
+            <td class="td-mono" style="font-size:13px">박변호사</td>
+            <td class="td-mono">2025.09.14</td>
+            <td><span class="status-wrap"><span class="status-dot dot-완료"></span>검토완료</span></td>
+            <td>—</td>
+            <td><span class="star off">☆</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="pg-info">1–50 / 512건</div>
+      <div class="pg-btns">
+        <div class="pg-btn">«</div>
+        <div class="pg-btn">‹</div>
+        <div class="pg-btn on">1</div>
+        <div class="pg-btn">2</div>
+        <div class="pg-btn">3</div>
+        <div class="pg-btn">…</div>
+        <div class="pg-btn">11</div>
+        <div class="pg-btn">›</div>
+        <div class="pg-btn">»</div>
+      </div>
+      <div class="pg-size">
+        페이지당
+        <select><option>50</option><option>100</option><option>200</option></select>
+        건
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+</body>
+</html>
